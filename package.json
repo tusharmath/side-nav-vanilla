@@ -1,10 +1,25 @@
 {
   "name": "side-nav-vanilla",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/main.js",
+  "jsnext:main": "dist/main-es",
   "author": "Tushar Mathur <tusharmath@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "prepublish": "tsc && npm run build && npm run build-min",
+    "build": "tsc && npm run build-es && npm run build-cjs",
+    "build-min": "npm run build-es-min && npm run build-cjs-min",
+    "build-es": "rollup -c",
+    "build-es-min": "babel dist/main-es.js > dist/main-es.min.js",
+    "build-cjs": "browserify dist/main.js > dist/main-cjs.js",
+    "build-cjs-min": "babel dist/main-cjs.js > dist/main-cjs.min.js"
+  },
   "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-babili": "^0.0.5",
+    "browserify": "^13.1.1",
+    "rollup": "^0.36.3",
+    "rollup-plugin-typescript": "^0.8.1",
     "systemjs": "^0.19.40"
   }
 }
