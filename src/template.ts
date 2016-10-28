@@ -8,7 +8,8 @@ export default `
       height: 100%;
       background-color: rgba(0, 0, 0, 0.6);
       transition: background cubic-bezier(1, 0, 1, 1) 300ms;
-      cursor: pointer; 
+      cursor: pointer;
+      user-select: none; 
     }
     .side-nav-slot {
       background-color: #FFF;

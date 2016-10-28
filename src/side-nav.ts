@@ -25,7 +25,7 @@ export class SideNav extends HTMLElement {
     this.slotEL.addEventListener("touchend", this.onEnd)
     this.slotEL.addEventListener("mouseup", this.onEnd)
     this.containerEL.addEventListener("click", (ev: MouseEvent) => {
-      if (!ev.target.matches(".side-nav-slot")) this.hide()
+      if (ev.target.matches(".side-nav-container")) this.hide()
     })
   }
 
@@ -59,6 +59,7 @@ export class SideNav extends HTMLElement {
   }
 
   private onStart(event: TouchEvent | MouseEvent) {
+    event.preventDefault()
     this.isMoving = true
     this.width = L.bcrWidth(this.slotEL)
     this.startX = L.clientX(event) / this.width
@@ -73,7 +74,7 @@ export class SideNav extends HTMLElement {
   private onEnd(event: TouchEvent | MouseEvent) {
     this.isMoving = false
     this.animate = true
-    if (Math.abs(this.translateX) > 0.25) {
+    if (Math.abs(this.translateX) > 0) {
       this.hide()
     } else {
       this.show()
