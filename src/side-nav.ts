@@ -8,6 +8,7 @@ export class SideNav extends HTMLElement {
   private width: number
   private startX: number
   private __translateX = 0
+  private isMoving = false
 
   constructor() {
     super()
@@ -17,9 +18,12 @@ export class SideNav extends HTMLElement {
     this.slotEL = this.root.querySelector(".side-nav-slot") as HTMLElement
     this.containerEL = this.root.querySelector(".side-nav-container") as HTMLElement
     this.style.display = "inherit"
-    this.slotEL.addEventListener("touchstart", this.onTouchStart)
-    this.slotEL.addEventListener("touchmove", this.onTouchMove)
-    this.slotEL.addEventListener("touchend", this.onTouchEnd)
+    this.slotEL.addEventListener("touchstart", this.onStart)
+    this.slotEL.addEventListener("mousedown", this.onStart)
+    this.slotEL.addEventListener("touchmove", this.onMove)
+    this.slotEL.addEventListener("mousemove", this.onMove)
+    this.slotEL.addEventListener("touchend", this.onEnd)
+    this.slotEL.addEventListener("mouseup", this.onEnd)
   }
 
   private set translateX(translateX: number) {
@@ -46,22 +50,25 @@ export class SideNav extends HTMLElement {
   }
 
   private bind() {
-    this.onTouchStart = this.onTouchStart.bind(this)
-    this.onTouchMove = this.onTouchMove.bind(this)
-    this.onTouchEnd = this.onTouchEnd.bind(this)
+    this.onStart = this.onStart.bind(this)
+    this.onMove = this.onMove.bind(this)
+    this.onEnd = this.onEnd.bind(this)
   }
 
-  private onTouchStart(event: TouchEvent) {
+  private onStart(event: TouchEvent | MouseEvent) {
+    this.isMoving = true
     this.width = L.bcrWidth(this.slotEL)
     this.startX = L.clientX(event) / this.width
     this.animate = false
   }
 
-  private onTouchMove(event: TouchEvent) {
+  private onMove(event: TouchEvent | MouseEvent) {
+    if (!this.isMoving) return
     this.translateX = L.clientX(event) / this.width - this.startX
   }
 
-  private onTouchEnd(event: TouchEvent) {
+  private onEnd(event: TouchEvent | MouseEvent) {
+    this.isMoving = false
     this.animate = true
     if (Math.abs(this.translateX) > 0.25) {
       this.hide()
@@ -75,7 +82,7 @@ export class SideNav extends HTMLElement {
     this.overlay = false
   }
 
-  show () {
+  show() {
     this.translateX = 0
     this.overlay = true
   }
