@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Paper Side Navigation</title>
+	<link rel="stylesheet" href="node_modules/material-design-icons/iconfont/material-icons.css">
 	<style>
 		html,
 		body {
@@ -28,17 +29,36 @@
 		}
 		
 		.nav-title {
-			background-color: rgb(85, 107, 214);
 			font-size: 2em;
-			height: 25%;
-			color: rgb(255, 255, 255);
-			display: flex;
-			align-items: flex-end;
 			padding: 20px
 		}
 		
 		.hidden {
 			display: none
+		}
+		
+		.horizontal-nav {
+			background-color: #333;
+			color: #FFF;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+		}
+		
+		.material-icons {
+			height: 50px;
+			width: 50px;
+			align-items: center;
+			display: flex;
+			justify-content: center;
+			cursor: pointer;
+		}
+		
+		.navbar-header {
+			height: 25%;
+			background-color: rgb(85, 107, 214);
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			color: rgb(255, 255, 255);
 		}
 	</style>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -57,9 +77,16 @@
 </head>
 
 <body>
-	<h1>Look at yuo!</h1>
+	<div class="horizontal-nav">
+		<i class="material-icons js--button-open">menu</i>
+	</div>
 	<x-side-nav class="hidden">
-		<div class="nav-title">Side Nav Demo</div>
+		<div class="navbar-header">
+			<div>
+				<i class="material-icons js--button-close">close</i>
+			</div>
+			<div class="nav-title">Side Nav Demo</div>
+		</div>
 		<ul class='nav'>
 			<li>One</li>
 			<li>Two</li>
@@ -68,6 +95,13 @@
 			<li>Five</li>
 		</ul>
 	</x-side-nav>
+	<script>
+		const nav = document.querySelector('x-side-nav')
+		const buttonOpen = document.querySelector('.js--button-open')
+		const buttonClose = document.querySelector('.js--button-close')
+		buttonOpen.addEventListener('click', () => nav.show()) 
+		buttonClose.addEventListener('click', () => nav.hide()) 
+	</script>
 </body>
 
 </html>
