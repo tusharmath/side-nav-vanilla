@@ -8,7 +8,6 @@ export class SideNav extends HTMLElement {
   private width: number
   private startX: number
   private __translateX = 0
-  private isMoving = false
 
   constructor() {
     super()
@@ -18,15 +17,10 @@ export class SideNav extends HTMLElement {
     this.slotEL = this.root.querySelector(".side-nav-slot") as HTMLElement
     this.containerEL = this.root.querySelector(".side-nav-container") as HTMLElement
     this.style.display = "inherit"
-    this.slotEL.addEventListener("touchstart", this.onStart)
-    this.slotEL.addEventListener("mousedown", this.onStart)
-    this.slotEL.addEventListener("touchmove", this.onMove)
-    this.slotEL.addEventListener("mousemove", this.onMove)
-    this.slotEL.addEventListener("touchend", this.onEnd)
-    this.slotEL.addEventListener("mouseup", this.onEnd)
-    this.containerEL.addEventListener("click", (ev: MouseEvent) => {
-      if (ev.target.matches(".side-nav-container")) this.hide()
-    })
+    this.containerEL.addEventListener("touchstart", this.onStart)
+    this.containerEL.addEventListener("touchmove", this.onMove)
+    this.containerEL.addEventListener("touchend", this.onEnd)
+    this.containerEL.addEventListener("click", this.onEnd)
   }
 
   private set translateX(translateX: number) {
@@ -58,23 +52,20 @@ export class SideNav extends HTMLElement {
     this.onEnd = this.onEnd.bind(this)
   }
 
-  private onStart(event: TouchEvent | MouseEvent) {
+  private onStart(event: TouchEvent) {
     event.preventDefault()
-    this.isMoving = true
     this.width = L.bcrWidth(this.slotEL)
     this.startX = L.clientX(event) / this.width
     this.animate = false
   }
 
-  private onMove(event: TouchEvent | MouseEvent) {
-    if (!this.isMoving) return
+  private onMove(event: TouchEvent) {
     this.translateX = L.clientX(event) / this.width - this.startX
   }
 
   private onEnd(event: TouchEvent | MouseEvent) {
-    this.isMoving = false
     this.animate = true
-    if (Math.abs(this.translateX) > 0) {
+    if (Math.abs(this.translateX) > 0 || event.target.matches(".side-nav-container")) {
       this.hide()
     } else {
       this.show()
