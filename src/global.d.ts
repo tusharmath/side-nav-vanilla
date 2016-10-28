@@ -13,3 +13,6 @@ interface HTMLElement {
 interface DocumentFragment {
   innerHTML: string
 }
+interface EventTarget {
+  matches(selector: string): boolean
+}

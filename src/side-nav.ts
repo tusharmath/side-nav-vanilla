@@ -24,6 +24,9 @@ export class SideNav extends HTMLElement {
     this.slotEL.addEventListener("mousemove", this.onMove)
     this.slotEL.addEventListener("touchend", this.onEnd)
     this.slotEL.addEventListener("mouseup", this.onEnd)
+    this.containerEL.addEventListener("click", (ev: MouseEvent) => {
+      if (!ev.target.matches(".side-nav-slot")) this.hide()
+    })
   }
 
   private set translateX(translateX: number) {
