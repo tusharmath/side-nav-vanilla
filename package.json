@@ -1,0 +1,10 @@
+{
+  "name": "side-nav-vanilla",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Tushar Mathur <tusharmath@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "systemjs": "^0.19.40"
+  }
+}

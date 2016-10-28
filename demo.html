@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Paper Side Navigation</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial;
+    }
+
+    .nav {
+      margin: 0;
+      padding: 60px 0 0;
+      list-style-type: none;
+      color: red;
+    }
+
+    .nav li {
+      padding: 10px;
+    }
+    .nav li:hover {
+      background-color: #EEE;
+    }
+
+    .hidden {
+      display: none
+    }
+  </style>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, user-scalable=no">
+  <script src="node_modules/systemjs/dist/system.js"></script>
+  <script>
+    SystemJS.defaultJSExtensions = true;
+    SystemJS.config({
+      paths: {
+        '*': './node_modules/*',
+        'dist/*': 'dist/*'
+      },
+      packageConfigPaths: ['./node_modules/*/package.json']
+    })
+  </script>
+  <script>SystemJS.import('dist/main.js');</script>
+</head>
+<body>
+<h1>Look at yuo!</h1>
+<x-side-nav class="hidden">
+  <ul class='nav'>
+    <li>Aditya Mathur</li>
+    <li>Ishana Mathur</li>
+    <li>Sana Mathur</li>
+    <li>Sanya Mathur</li>
+    <li>Tushar Mathur</li>
+  </ul>
+</x-side-nav>
+</body>
+</html>
