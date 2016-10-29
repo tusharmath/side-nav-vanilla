@@ -7,7 +7,7 @@ export class SideNav extends HTMLElement {
   private containerEL: HTMLElement
   private width: number
   private startX: number
-  private __translateX = 0
+  private __completion = 0
 
   constructor() {
     super()
@@ -23,13 +23,13 @@ export class SideNav extends HTMLElement {
     this.containerEL.addEventListener("click", this.onEnd)
   }
 
-  private set translateX(translateX: number) {
-    if (translateX > 0) return
-    this.__translateX = translateX
-    this.slotEL.style.transform = `translateX(${translateX * 100}%)`
+  private set completion(completion: number) {
+    if (completion > 0) return
+    this.__completion = completion
+    this.slotEL.style.transform = `translateX(${completion * 100}%)`
   }
-  private get translateX() {
-    return this.__translateX
+  private get completion() {
+    return this.__completion
   }
   private set animate(value: boolean) {
     if (value) {
@@ -60,12 +60,12 @@ export class SideNav extends HTMLElement {
   }
 
   private onMove(event: TouchEvent) {
-    this.translateX = L.clientX(event) / this.width - this.startX
+    this.completion = L.clientX(event) / this.width - this.startX
   }
 
   private onEnd(event: TouchEvent | MouseEvent) {
     this.animate = true
-    if (Math.abs(this.translateX) > 0 || event.target.matches(".side-nav-container")) {
+    if (Math.abs(this.completion) > 0 || event.target.matches(".side-nav-container")) {
       this.hide()
     } else {
       this.show()
@@ -73,12 +73,12 @@ export class SideNav extends HTMLElement {
   }
 
   hide() {
-    this.translateX = -1.05
+    this.completion = -1.05
     this.overlay = false
   }
 
   show() {
-    this.translateX = 0
+    this.completion = 0
     this.overlay = true
   }
 }
