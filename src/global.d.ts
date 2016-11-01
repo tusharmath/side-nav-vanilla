@@ -1,3 +1,5 @@
+/// <reference path="../typings/index.d.ts" />
+
 interface CustomElementRegistry {
   define(name: string, element: Function): void
 }

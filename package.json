@@ -23,5 +23,9 @@
     "rollup": "^0.36.3",
     "rollup-plugin-typescript": "^0.8.1",
     "systemjs": "^0.19.40"
+  },
+  "dependencies": {
+    "observable-air": "latest",
+    "ramda": "^0.22.1"
   }
 }

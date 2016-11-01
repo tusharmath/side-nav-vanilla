@@ -6,10 +6,17 @@ export default `
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      transition: background cubic-bezier(1, 0, 1, 1) 300ms;
       cursor: pointer;
-      user-select: none; 
+      user-select: none;
+    }
+    .side-nav-container .overlay {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      transition: opacity cubic-bezier(1, 0, 1, 1) 300ms;
+      will-change: opacity;
+      top: 0;
     }
     .side-nav-slot {
       background-color: #FFF;
@@ -19,7 +26,7 @@ export default `
       will-change: transform;
       transition: transform cubic-bezier(1, 0, 1, 1) 300ms;
     }
-    .no-anime {
+    .no-anime .overlay, .no-anime .side-nav-slot {
       transition: none;
     }
     .no-show {
@@ -28,8 +35,10 @@ export default `
     }
   </style>
   <div class="side-nav-container">
+    <div class="overlay"></div>
     <div class="side-nav-slot">
       <slot/>
-    </div>
+      ul.ss
+    </div>    
   <div>
 `
