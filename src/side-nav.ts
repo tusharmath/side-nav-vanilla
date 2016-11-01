@@ -26,13 +26,13 @@ interface ISource {
 
 type Reducer = { (s: State): State }
 
-function DomEvents(nav: SideNav) {
-  const containerEL = O.fromDOM(nav.containerEL)
+function DomEvents(containerEL: HTMLElement) {
+  const containerEV = O.fromDOM(containerEL)
   return {
-    touchMove$: containerEL("touchmove"),
-    touchStart$: containerEL("touchstart"),
-    touchEnd$: containerEL("touchend"),
-    click$: containerEL("click")
+    touchMove$: containerEV("touchmove"),
+    touchStart$: containerEV("touchstart"),
+    touchEnd$: containerEV("touchend"),
+    click$: containerEV("click")
   }
 }
 const translateX = R.compose(
@@ -54,6 +54,7 @@ const touchStartR = R.curry(function (rootEL: HTMLElement, touchStart: TouchEven
 })
 const touchEndR = R.curry(function (touchEnd: TouchEvent, state: State) {
   const completion = L.completion(state.width, state.startX, L.clientX(touchEnd))
+  console.log(completion)
   if (completion < 0) return R.merge(state, { completion: -1.0, isMoving: false })
   return R.assoc("isMoving", false, state)
 })
@@ -68,7 +69,6 @@ function Runner(ss: ISource) {
   const opacity = R.compose(D.style(ss.overlayEL, "opacity"), L.opacityCSS)
   const transform = R.compose(D.style(ss.slotEL, "transform"), L.translateCSS)
 
-  O.forEach((x: any) => console.log(x.target), ss.touchEnd$)
   const reducer$ = O.merge([
     O.map(touchStartR(ss.rootEL), ss.touchStart$),
     O.map(touchEndR, ss.touchEnd$),
@@ -87,20 +87,17 @@ function Runner(ss: ISource) {
 }
 
 export class SideNav extends HTMLElement {
-  public slotEL: HTMLElement
-  public containerEL: HTMLElement
-  public overlayEL: HTMLElement
   private subscription: ISubscription
 
   constructor() {
     super()
     const root = this.attachShadow({ mode: "open" })
     root.innerHTML = template
+    this.style.display = "inherit"
     const slotEL = root.querySelector(".side-nav-slot") as HTMLElement
     const containerEL = root.querySelector(".side-nav-container") as HTMLElement
     const overlayEL = root.querySelector(".overlay") as HTMLElement
-    this.style.display = "inherit"
-    const source = R.merge(DomEvents(this), { slotEL, containerEL, overlayEL }) as ISource
+    const source = R.merge(DomEvents(containerEL), { slotEL, containerEL, overlayEL, rootEL: this })
     this.subscription = O.forEach(this.onValue, Runner(source))
   }
 
