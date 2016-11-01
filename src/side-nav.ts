@@ -13,6 +13,16 @@ interface State {
   isMoving: boolean
   width: number
 }
+interface ISource {
+  touchStart$: IObservable<TouchEvent>,
+  touchMove$: IObservable<TouchEvent>,
+  touchEnd$: IObservable<TouchEvent>,
+  click$: IObservable<MouseEvent>,
+  containerEL: HTMLElement,
+  overlayEL: HTMLElement,
+  slotEL: HTMLElement,
+  rootEL: HTMLElement
+}
 
 type Reducer = { (s: State): State }
 
@@ -33,14 +43,14 @@ const translateX = R.compose(
 
 const setIsMoving = L.mapTo(R.assoc("isMoving", true))
 const unsetIsMoving = L.mapTo(R.assoc("isMoving", false))
-const initialState = (q: { nav: SideNav, touchStart: TouchEvent }) => ({
-  width: L.bcrWidth(q.nav),
+const initialState = (q: { rootEL: HTMLElement, touchStart: TouchEvent }) => ({
+  width: L.bcrWidth(q.rootEL),
   startX: L.clientX(q.touchStart),
   completion: 0,
   isMoving: true
 })
-const touchStartR = R.curry(function (nav: SideNav, touchStart: TouchEvent, state: State) {
-  return initialState({ nav, touchStart })
+const touchStartR = R.curry(function (rootEL: HTMLElement, touchStart: TouchEvent, state: State) {
+  return initialState({ rootEL, touchStart })
 })
 const touchEndR = R.curry(function (touchEnd: TouchEvent, state: State) {
   const completion = L.completion(state.width, state.startX, L.clientX(touchEnd))
@@ -52,54 +62,50 @@ const touchMoveR = R.curry(function (touchMove: TouchEvent, state: State) {
   if (completion > 0) return R.assoc("completion", 0, state)
   return R.assoc("completion", L.completion(state.width, state.startX, L.clientX(touchMove)), state)
 })
-function Runner(nav: SideNav) {
-  const noAnime = D.addClass(nav.containerEL, "no-anime")
-  const anime = D.removeClass(nav.containerEL, "no-anime")
-  const opacity = R.compose(D.style(nav.overlayEL, "opacity"), L.opacityCSS)
-  const transform = R.compose(D.style(nav.slotEL, "transform"), L.translateCSS)
+function Runner(ss: ISource) {
+  const noAnime = D.addClass(ss.containerEL, "no-anime")
+  const anime = D.removeClass(ss.containerEL, "no-anime")
+  const opacity = R.compose(D.style(ss.overlayEL, "opacity"), L.opacityCSS)
+  const transform = R.compose(D.style(ss.slotEL, "transform"), L.translateCSS)
 
-  const EV = DomEvents(nav)
-
-
+  O.forEach((x: any) => console.log(x.target), ss.touchEnd$)
   const reducer$ = O.merge([
-    O.map(touchStartR(nav), EV.touchStart$),
-    O.map(touchEndR, EV.touchEnd$),
-    O.map(touchMoveR, EV.touchMove$)
+    O.map(touchStartR(ss.rootEL), ss.touchStart$),
+    O.map(touchEndR, ss.touchEnd$),
+    O.map(touchMoveR, ss.touchMove$)
   ])
 
   const model$ = O.scan((memory: State, curr: Reducer) => curr(memory), null, reducer$)
   return O.merge([
-    O.map((e: State) => e.isMoving ? noAnime : anime, model$),
-    O.map((e: State) => transform(e.completion), model$),
-    O.map((e: State) => opacity(e.completion), model$),
-    O.map(D.preventDefault, EV.touchStart$)
+    O.map((e: State) => D.combine(
+      e.isMoving ? noAnime : anime,
+      transform(e.completion),
+      opacity(e.completion)
+    ), model$),
+    O.map(D.preventDefault, ss.touchStart$)
   ])
 }
 
 export class SideNav extends HTMLElement {
-  private root: DocumentFragment
   public slotEL: HTMLElement
   public containerEL: HTMLElement
   public overlayEL: HTMLElement
-  private width: number
-  private startX: number
   private subscription: ISubscription
-  private __completion = 0
 
   constructor() {
     super()
-    this.root = this.attachShadow({ mode: "open" })
-    this.root.innerHTML = template
-    this.slotEL = this.root.querySelector(".side-nav-slot") as HTMLElement
-    this.containerEL = this.root.querySelector(".side-nav-container") as HTMLElement
-    this.overlayEL = this.root.querySelector(".overlay") as HTMLElement
+    const root = this.attachShadow({ mode: "open" })
+    root.innerHTML = template
+    const slotEL = root.querySelector(".side-nav-slot") as HTMLElement
+    const containerEL = root.querySelector(".side-nav-container") as HTMLElement
+    const overlayEL = root.querySelector(".overlay") as HTMLElement
     this.style.display = "inherit"
-    const observer = O.Observer.of<ITask<SideNav>>(this.onValue)
-    this.subscription = O.subscribe(Runner(this), observer)
+    const source = R.merge(DomEvents(this), { slotEL, containerEL, overlayEL }) as ISource
+    this.subscription = O.forEach(this.onValue, Runner(source))
   }
 
-  private onValue(task: ITask<SideNav>) {
-    task.run(this)
+  private onValue(task: ITask) {
+    task.run()
   }
 
   disconnectedCallback() {

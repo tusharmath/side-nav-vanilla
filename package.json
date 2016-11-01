@@ -25,7 +25,7 @@
     "systemjs": "^0.19.40"
   },
   "dependencies": {
-    "observable-air": "latest",
+    "observable-air": "^1.15.1",
     "ramda": "^0.22.1"
   }
 }

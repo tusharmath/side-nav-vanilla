@@ -1,3 +1,3 @@
-export interface ITask<T> {
-  run(params: T): void
+export interface ITask {
+  run(): void
 }
