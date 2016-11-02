@@ -11,17 +11,8 @@ type Reducer = { (s: IState): IState }
 const TRANSLATE_END = -1.05
 const clientX = (ev: TouchEvent) => ev.changedTouches[0].clientX
 const translateCSS = (completion: number) => `translateX(${completion * 100}%)`
-const completion = R.curry((width: number, startX: number, currentX: number) => (currentX - startX) / width)
+const completion = (width: number, startX: number, currentX: number) => (currentX - startX) / width
 const opacityCSS = R.compose(R.toString, R.inc)
-const domEvents = (containerEL: HTMLElement) => {
-  const containerEV = O.fromDOM(containerEL)
-  return {
-    touchMove$: containerEV("touchmove"),
-    touchStart$: containerEV("touchstart"),
-    touchEnd$: containerEV("touchend"),
-    click$: containerEV("click")
-  }
-}
 const initialState = (q: { rootEL: HTMLElement, touchStart: TouchEvent }) => ({
   width: q.rootEL.getBoundingClientRect().width,
   startX: clientX(q.touchStart),
@@ -37,31 +28,37 @@ const touchEndR = R.curry((touchEnd: TouchEvent, state: IState) => {
 })
 const visibilityR = R.curry((isVisible: boolean, state: IState) => {
   const completion = isVisible ? 0 : TRANSLATE_END
-  return R.assoc("completion", completion, state)
+  return R.merge(state, { completion, isMoving: false })
 })
 const touchMoveR = R.curry((touchMove: TouchEvent, state: IState) => {
   const value = completion(state.width, state.startX, clientX(touchMove))
   if (value > 0) return R.assoc("completion", 0, state)
   return R.assoc("completion", value, state)
 })
-export function Runner(source: ISource) {
-  const opacity = R.compose(D.style(source.overlayEL, "opacity"), opacityCSS)
-  const transform = R.compose(D.style(source.slotEL, "transform"), translateCSS)
+const model = (source: ISource) => {
   const reducer$ = O.merge([
     O.map(touchStartR(source.rootEL), source.touchStart$),
     O.map(touchEndR, source.touchEnd$),
     O.map(touchMoveR, O.rafThrottle(source.touchMove$)),
     O.map(visibilityR, source.isVisible$)
   ])
-  const model$ = O.scan((memory: IState, curr: Reducer) => curr(memory), null, reducer$)
+  return O.scan((memory: IState, curr: Reducer) => curr(memory), null, reducer$)
+}
+const overlayClicks = R.compose(
+  O.map(D.preventDefault),
+  O.filter((x: Event) => x.target.matches(".overlay"))
+)
+export function main(source: ISource) {
+  const opacity = R.compose(D.style(source.overlayEL, "opacity"), opacityCSS)
+  const translateX = R.compose(D.style(source.slotEL, "transform"), translateCSS)
   return O.merge([
     O.map((e: IState) => D.combine(
       D.toggleClass(source.containerEL, "no-anime", e.isMoving),
-      transform(e.completion),
+      translateX(e.completion),
       opacity(e.completion),
       D.toggleClass(source.containerEL, "no-show", e.completion < -1)
-    ), model$),
-    O.map(D.preventDefault, source.touchStart$)
+    ), model(source)),
+    overlayClicks(source.touchStart$)
   ])
 }
 export class SideNav extends HTMLElement {
@@ -77,8 +74,18 @@ export class SideNav extends HTMLElement {
     const containerEL = root.querySelector(".side-nav-container") as HTMLElement
     const overlayEL = root.querySelector(".overlay") as HTMLElement
     const isVisible$ = new O.Observable((observer) => void (this.observer = observer))
-    const source = R.merge(domEvents(containerEL), { slotEL, containerEL, overlayEL, rootEL: this, isVisible$ })
-    this.subscription = O.forEach(this.onValue, Runner(source))
+    const containerEV = O.fromDOM(containerEL)
+    this.subscription = O.forEach(this.onValue, main({
+      slotEL,
+      containerEL,
+      overlayEL,
+      rootEL: this,
+      isVisible$,
+      touchMove$: containerEV("touchmove"),
+      touchStart$: containerEV("touchstart"),
+      touchEnd$: containerEV("touchend"),
+      click$: containerEV("click")
+    }))
   }
 
   private onValue(task: ITask) {
