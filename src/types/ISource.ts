@@ -1,5 +1,4 @@
 import { IObservable } from "observable-air/.dist/src/types/core/IObservable"
-import { IObserver } from "observable-air/.dist/src/types/core/IObserver"
 
 export interface ISource {
   click$: IObservable<MouseEvent>,
