@@ -44,7 +44,6 @@ export class ToggleClassTask implements ITask {
     }
   }
 }
-
 export default {
   addClass: (element: HTMLElement, className: string) => new AddClassTask(element, className),
   removeClass: (element: HTMLElement, className: string) => new RemoveClassTask(element, className),
@@ -52,5 +51,5 @@ export default {
   preventDefault: (event: Event) => new PreventDefaultTask(event),
   combine: (...tasks: Array<ITask>) => new TaskList(tasks),
   noop: () => new Noop(),
-  classIf: R.curry((element: HTMLElement, className: string, show: boolean) => new ToggleClassTask(element, className, show))
+  toggleClass: R.curry((element: HTMLElement, className: string, show: boolean) => new ToggleClassTask(element, className, show))
 }
