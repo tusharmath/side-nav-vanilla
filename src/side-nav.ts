@@ -8,15 +8,12 @@ import { IState } from "./types/IState"
 
 type Reducer = { (s: IState): IState }
 
-export const TRANSLATE_END = -1.05
-export const clientX = (ev: TouchEvent) => ev.changedTouches[0].clientX
-export const bcrWidth = (el: HTMLElement) => el.getBoundingClientRect().width
-export const translateCSS = (completion: number) => `translateX(${completion * 100}%)`
-export const completion = R.curry((width: number, startX: number, currentX: number) => (currentX - startX) / width)
-export const mapTo = <T>(value: T) => O.map(R.always(value))
-export const pluck = <T>(prop: string, source$: O.IObservable<T>) => O.map(R.pluck(prop))
-export const opacityCSS = R.compose(R.toString, R.inc)
-export const domEvents = (containerEL: HTMLElement) => {
+const TRANSLATE_END = -1.05
+const clientX = (ev: TouchEvent) => ev.changedTouches[0].clientX
+const translateCSS = (completion: number) => `translateX(${completion * 100}%)`
+const completion = R.curry((width: number, startX: number, currentX: number) => (currentX - startX) / width)
+const opacityCSS = R.compose(R.toString, R.inc)
+const domEvents = (containerEL: HTMLElement) => {
   const containerEV = O.fromDOM(containerEL)
   return {
     touchMove$: containerEV("touchmove"),
@@ -25,31 +22,24 @@ export const domEvents = (containerEL: HTMLElement) => {
     click$: containerEV("click")
   }
 }
-export const translateX = R.compose(
-  O.map(translateCSS),
-  O.filter(x => x < 0),
-  O.switchLatest
-)
-export const setIsMoving = mapTo(R.assoc("isMoving", true))
-export const unsetIsMoving = mapTo(R.assoc("isMoving", false))
-export const initialState = (q: { rootEL: HTMLElement, touchStart: TouchEvent }) => ({
-  width: bcrWidth(q.rootEL),
+const initialState = (q: { rootEL: HTMLElement, touchStart: TouchEvent }) => ({
+  width: q.rootEL.getBoundingClientRect().width,
   startX: clientX(q.touchStart),
   completion: 0,
   isMoving: true
 })
-export const touchStartR = R.curry((rootEL: HTMLElement, touchStart: TouchEvent, state: IState) => initialState({ rootEL, touchStart }))
-export const touchEndR = R.curry((touchEnd: TouchEvent, state: IState) => {
+const touchStartR = R.curry((rootEL: HTMLElement, touchStart: TouchEvent, state: IState) => initialState({ rootEL, touchStart }))
+const touchEndR = R.curry((touchEnd: TouchEvent, state: IState) => {
   const value = completion(state.width, state.startX, clientX(touchEnd))
   if (value < 0 || value === 0 && touchEnd.target.matches(".overlay"))
     return R.merge(state, { completion: TRANSLATE_END, isMoving: false })
   return R.assoc("isMoving", false, state)
 })
-export const visibilityR = R.curry((isVisible: boolean, state: IState) => {
+const visibilityR = R.curry((isVisible: boolean, state: IState) => {
   const completion = isVisible ? 0 : TRANSLATE_END
   return R.assoc("completion", completion, state)
 })
-export const touchMoveR = R.curry((touchMove: TouchEvent, state: IState) => {
+const touchMoveR = R.curry((touchMove: TouchEvent, state: IState) => {
   const value = completion(state.width, state.startX, clientX(touchMove))
   if (value > 0) return R.assoc("completion", 0, state)
   return R.assoc("completion", value, state)
