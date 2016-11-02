@@ -28,7 +28,7 @@ export class PreventDefaultTask implements ITask {
 export class TaskList implements ITask {
   constructor(private tasks: Array<ITask> = []) { }
   run() {
-    this.tasks.forEach(t => t.run())
+    for (var i = 0; i < this.tasks.length; ++i) this.tasks[i].run()
   }
 }
 export class Noop implements ITask {
