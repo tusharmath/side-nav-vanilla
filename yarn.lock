@@ -156,8 +156,8 @@ babel-code-frame@^6.16.0:
     js-tokens "^2.0.0"
 
 babel-core@^6.18.0:
-  version "6.18.0"
-  resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.18.0.tgz#bb5ce9bc0a956e6e94e2f12d597abb3b0b330deb"
+  version "6.18.2"
+  resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.18.2.tgz#d8bb14dd6986fa4f3566a26ceda3964fa0e04e5b"
   dependencies:
     babel-code-frame "^6.16.0"
     babel-generator "^6.18.0"
@@ -1589,9 +1589,9 @@ object.omit@^2.0.0:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
 
-observable-air@^1.15.1:
-  version "1.16.0"
-  resolved "https://registry.yarnpkg.com/observable-air/-/observable-air-1.16.0.tgz#9c579bd04d30512c0692bbdbec954b0dd48f95e2"
+observable-air:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/observable-air/-/observable-air-1.17.0.tgz#0db57511cae039a4399507edf92172fe607078fb"
 
 once@^1.3.0:
   version "1.4.0"

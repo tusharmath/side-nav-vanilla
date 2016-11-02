@@ -34,6 +34,16 @@ export class TaskList implements ITask {
 export class Noop implements ITask {
   run() { }
 }
+export class ToggleClassTask implements ITask {
+  constructor(private element: HTMLElement, private className: string, private show: boolean) { }
+  run() {
+    if (this.show) {
+      this.element.classList.add(this.className)
+    } else {
+      this.element.classList.remove(this.className)
+    }
+  }
+}
 
 export default {
   addClass: (element: HTMLElement, className: string) => new AddClassTask(element, className),
@@ -41,5 +51,6 @@ export default {
   style: R.curry((element: HTMLElement, property: string, value: string) => new SetStyleTask(element, property, value)),
   preventDefault: (event: Event) => new PreventDefaultTask(event),
   combine: (...tasks: Array<ITask>) => new TaskList(tasks),
-  noop: () => new Noop()
+  noop: () => new Noop(),
+  classIf: R.curry((element: HTMLElement, className: string, show: boolean) => new ToggleClassTask(element, className, show))
 }

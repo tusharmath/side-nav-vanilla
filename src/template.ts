@@ -27,11 +27,10 @@ export default `
       transition: transform cubic-bezier(1, 0, 1, 1) 300ms;
     }
     .no-anime .overlay, .no-anime .side-nav-slot {
-      transition: none;
+      transition: none;      
     }
     .no-show {
       pointer-events: none;
-      background-color: transparent;
     }
   </style>
   <div class="side-nav-container">

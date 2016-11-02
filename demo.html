@@ -99,8 +99,12 @@
 		const nav = document.querySelector('x-side-nav')
 		const buttonOpen = document.querySelector('.js--button-open')
 		const buttonClose = document.querySelector('.js--button-close')
-		buttonOpen.addEventListener('click', () => nav.show()) 
-		buttonClose.addEventListener('click', () => nav.hide()) 
+		buttonOpen.addEventListener('click', (ev) => {
+			nav.show()
+		}) 
+		buttonClose.addEventListener('click', (ev) => {
+			nav.hide()
+		})
 	</script>
 </body>
 
