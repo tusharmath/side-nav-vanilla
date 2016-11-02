@@ -14,7 +14,7 @@ export default `
       height: 100%;
       width: 100%;
       background-color: rgba(0, 0, 0, 0.6);
-      transition: opacity cubic-bezier(1, 0, 1, 1) 300ms;
+      transition: opacity cubic-bezier(0, 0, 0.3, 1) 300ms;
       will-change: opacity;
       top: 0;
     }
@@ -24,7 +24,7 @@ export default `
       width: 300px;
       box-shadow: 14px 0px 15px -7px rgba(0, 0, 0, 0.6);
       will-change: transform;
-      transition: transform cubic-bezier(1, 0, 1, 1) 300ms;
+      transition: transform cubic-bezier(0, 0, 0.3, 1) 300ms;
     }
     .no-anime .overlay, .no-anime .side-nav-slot {
       transition: none;      
