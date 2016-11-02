@@ -98,10 +98,12 @@
 	<script>
 		const nav = document.querySelector('x-side-nav')
 		const buttonOpen = document.querySelector('.js--button-open')
-		buttonOpen.addEventListener('click', (ev) => {
+		function openNav (ev) {
 			nav.show()
-			ev.preventDefault()
-		})
+			ev.preventDefault()		
+		}
+		buttonOpen.addEventListener('click', openNav)
+		buttonOpen.addEventListener('touchend', openNav)
 		function closeNav (ev)  {
 			if(ev.target.matches('.js--button-close')) {
 				nav.hide()
