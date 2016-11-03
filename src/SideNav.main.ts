@@ -3,13 +3,18 @@
  */
 
 
-import {IAction, ITask} from '../rwc/ReactiveHTMLElement'
 import * as O from 'observable-air'
-import {dom} from './DOMTask'
+import * as T from './Tasks'
 import {view} from './SideNav.view'
+import {IAction, ITask} from '../rwc/Types'
 
-export function main (root: HTMLElement, intent$: O.IObservable<IAction<any>>): O.IObservable<ITask<any>> {
-  return O.fromArray([
-    dom(root.shadowRoot as HTMLElement, view)
+const just = <T> (value: T) => O.fromArray([value])
+
+export function main (root: HTMLElement, action$: O.IObservable<IAction<any>>): O.IObservable<ITask<any>> {
+  const shadowRoot = root.shadowRoot as HTMLElement
+  O.forEach(x => console.log(x), action$)
+  return O.merge([
+    just(T.dom(shadowRoot, view)),
+    O.map(T.noop, action$)
   ])
 }

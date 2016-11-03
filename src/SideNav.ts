@@ -10,10 +10,10 @@ export class SideNav extends ReactiveHTMLElement {
   }
 
   show () {
-    this.dispatch({type: "@@external/show", params: null})
+    this.dispatch("@@external/show")
   }
 
   hide () {
-    this.dispatch({type: "@@external/hide", params: null})
+    this.dispatch("@@external/hide")
   }
 }

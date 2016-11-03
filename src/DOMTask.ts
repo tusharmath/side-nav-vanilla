@@ -2,25 +2,25 @@
  * Created by tushar.mathur on 03/11/16.
  */
 
-import {ITask, IDispatcher} from '../rwc/ReactiveHTMLElement'
 import {render, VNode} from 'preact'
 import {IViewFunction} from './types/IViewFunction'
+import {IDispatcher, ITask} from '../rwc/Types'
 export {h} from 'preact'
 
-
-export class DOMTask implements ITask<void> {
-  constructor (private element: HTMLElement, private view: IViewFunction) {
+export class EventDispatcherFactory {
+  constructor (private dispatcher: IDispatcher<Event>) {
   }
 
-  dispatch (name: string) {
-
-  }
-
-  run (dispatch: IDispatcher<void>): void {
-    render(this.view(this), this.element)
+  of (name: string) {
+    return (ev: Event) => this.dispatcher.dispatch(name, ev)
   }
 }
 
-export function dom (root: HTMLElement, view: IViewFunction) {
-  return new DOMTask(root, view)
+export class DOMTask implements ITask<Event> {
+  constructor (private element: HTMLElement, private view: IViewFunction) {
+  }
+
+  run (dispatch: IDispatcher<Event>): void {
+    render(this.view(new EventDispatcherFactory(dispatch)), this.element)
+  }
 }

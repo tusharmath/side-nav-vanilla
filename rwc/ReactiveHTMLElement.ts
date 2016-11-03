@@ -3,42 +3,32 @@
  */
 
 import * as O from 'observable-air'
+import {IAction, ITask, IMain, IDispatcher} from './Types'
+import {Action} from './Action'
 
-export interface IAction<T> {
-  type: string
-  params: T
-}
-
-export interface ITask<T> {
-  run(dispatch: IDispatcher<T>): void
-}
-
-export interface IDispatcher<T> {
-  (action: IAction<T>): void
-}
-
-export interface IMain<T> {
-  (el: ReactiveHTMLElement, $: O.IObservable<IAction<T>>): O.IObservable<ITask<T>>
-}
-
-export abstract class ReactiveHTMLElement extends HTMLElement {
+export abstract class ReactiveHTMLElement extends HTMLElement implements IDispatcher<any> {
   private subscription: O.ISubscription
-  protected observer: O.IObserver<IAction<any>>
-  protected dispatch: IDispatcher<any>
+  private observer: O.IObserver<IAction<any>>
 
   constructor (private main: IMain<any>) {
     super()
-
   }
 
   connectedCallback () {
-    const intent$ = new O.Observable<IAction<any>>((observer) => void (this.observer = observer))
-    this.dispatch = (action: IAction<any>) => this.observer.next(action)
-    const runTasks = (task: ITask<any>) => task.run(this.dispatch)
-    this.subscription = O.forEach(runTasks, this.main(this, intent$))
+    const action$ = new O.Observable<IAction<any>>((observer) => {
+      this.observer = observer
+    })
+    const runTasks = (task: ITask<any>) => task.run(this)
+    this.subscription = O.forEach(runTasks, this.main(this, O.multicast(action$)))
+  }
+
+  dispatch <T> (type: string, params: T = null) {
+    this.observer.next(Action.of(type, params))
   }
 
   disconnectedCallback () {
+    this.dispatch('@@rwc/disconnected')
+    this.observer.complete()
     this.subscription.unsubscribe()
   }
 }

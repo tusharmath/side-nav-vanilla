@@ -4,21 +4,20 @@
 
 import {h} from 'preact'
 import {IViewFunction} from './types/IViewFunction'
-import {DOMTask} from './DOMTask'
+import {EventDispatcherFactory} from './DOMTask'
 
-
-export const view: IViewFunction = (d: DOMTask) =>
+export const view: IViewFunction = (f: EventDispatcherFactory) =>
   h("div", {
       className: 'side-nav-container',
-      ontouchmove: d.dispatch('container.touchMove'),
-      ontouchstart: d.dispatch('container.touchStart'),
-      ontouchend: d.dispatch('container.touchEnd'),
-      onclick: d.dispatch('overlay.click')
+      onTouchMove: f.of('container.touchMove'),
+      onTouchStart: f.of('container.touchStart'),
+      onTouchEnd: f.of('container.touchEnd'),
+      onClick: f.of('overlay.click')
     },
     h("div", {
       className: 'overlay',
-      ontouchend: d.dispatch('overlay.touchEnd'),
-      onclick: d.dispatch('overlay.click')
+      onTouchEnd: f.of('overlay.touchEnd'),
+      onClick: f.of('overlay.click')
     }),
     h("div", {className: 'side-nav-slot'},
       h("slot", null)
