@@ -27,8 +27,6 @@ export abstract class ReactiveHTMLElement extends HTMLElement implements IDispat
   }
 
   disconnectedCallback () {
-    this.dispatch('@@rwc/disconnected')
-    this.observer.complete()
     this.subscription.unsubscribe()
   }
 }
