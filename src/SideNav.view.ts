@@ -3,10 +3,9 @@
  */
 
 import {h} from 'preact'
-import {IViewFunction} from './types/IViewFunction'
-import {EventDispatcherFactory} from './DOMTask'
+import {ListenerFactory} from '../rwc/ListenerFactory'
 
-export const view: IViewFunction = (f: EventDispatcherFactory) =>
+export const view = (f: ListenerFactory) =>
   h("div", {
       className: 'side-nav-container',
       onTouchMove: f.of('container.touchMove'),
