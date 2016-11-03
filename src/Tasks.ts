@@ -3,11 +3,12 @@
  */
 
 import {DOMTask} from './DOMTask'
-import {NoopTask} from './NoopTask'
+import * as R from 'ramda'
+import {PreventDefaultTask} from './PreventDefaultTask'
 
-export function dom (root: HTMLElement, view: JSX.Element) {
+export const dom = R.curry((root: HTMLElement, view: JSX.Element) => {
   return new DOMTask(root, view)
-}
-export function noop () {
-  return new NoopTask()
+})
+export function preventDefault (ev: Event) {
+  return new PreventDefaultTask(ev)
 }

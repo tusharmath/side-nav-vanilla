@@ -14,3 +14,10 @@ export class DOMTask implements ITask<Event> {
     render(this.view, this.element)
   }
 }
+export class DOMTaskFactor {
+  node: JSX.Element
+
+  of () {
+
+  }
+}

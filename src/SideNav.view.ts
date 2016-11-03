@@ -3,9 +3,11 @@
  */
 
 import {h} from 'preact'
+import * as R from 'ramda'
 import {ListenerFactory} from '../rwc/ListenerFactory'
+import {IState} from './types/IState'
 
-export const view = (f: ListenerFactory) =>
+export const view = R.curry((f: ListenerFactory, state: IState) =>
   h("div", {
       className: 'side-nav-container',
       onTouchMove: f.of('container.touchMove'),
@@ -21,5 +23,5 @@ export const view = (f: ListenerFactory) =>
     h("div", {className: 'side-nav-slot'},
       h("slot", null)
     )
-  )
+  ))
 
