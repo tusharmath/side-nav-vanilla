@@ -8,6 +8,7 @@ export class SideNav extends HTMLElement {
   private width: number
   private startX: number
   private __completion = 0
+  private canSet = true
 
   constructor () {
     super()
@@ -56,7 +57,11 @@ export class SideNav extends HTMLElement {
   }
 
   private onMove = (event: TouchEvent) => {
-    this.completion = L.clientX(event) / this.width - this.startX
+    if (this.canSet) {
+      this.completion = L.clientX(event) / this.width - this.startX
+      this.canSet = false
+      requestAnimationFrame(() => this.canSet = true)
+    }
   }
 
   private onEnd = (event: TouchEvent | MouseEvent) => {
