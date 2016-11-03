@@ -2,5 +2,8 @@
   "name": "side-nav-vanilla",
   "dependencies": {
     "ramda": "registry:dt/ramda#0.0.0+20160824142652"
+  },
+  "globalDependencies": {
+    "hyperscript": "registry:dt/hyperscript#0.0.0+20161003131244"
   }
 }

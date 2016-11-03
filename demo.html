@@ -12,37 +12,33 @@
 			padding: 0;
 			font-family: Arial;
 		}
-		
+
 		.nav {
 			margin: 0;
 			padding: 60px 0 0;
 			list-style-type: none;
 			color: red;
 		}
-		
+
 		.nav li {
 			padding: 10px;
 		}
-		
+
 		.nav li:hover {
 			background-color: #EEE;
 		}
-		
+
 		.nav-title {
 			font-size: 2em;
 			padding: 20px
 		}
-		
-		.hidden {
-			display: none
-		}
-		
+
 		.horizontal-nav {
 			background-color: #333;
 			color: #FFF;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 		}
-		
+
 		.material-icons {
 			height: 50px;
 			width: 50px;
@@ -51,7 +47,7 @@
 			justify-content: center;
 			cursor: pointer;
 		}
-		
+
 		.navbar-header {
 			height: 25%;
 			background-color: rgb(85, 107, 214);
@@ -80,7 +76,7 @@
 	<div class="horizontal-nav">
 		<i class="material-icons js--button-open">menu</i>
 	</div>
-	<x-side-nav class="hidden">
+	<x-side-nav>
 		<div class="navbar-header">
 			<div>
 				<i class="material-icons js--button-close">close</i>
@@ -100,7 +96,7 @@
 		const buttonOpen = document.querySelector('.js--button-open')
 		function openNav (ev) {
 			nav.show()
-			ev.preventDefault()		
+			ev.preventDefault()
 		}
 		buttonOpen.addEventListener('click', openNav)
 		buttonOpen.addEventListener('touchend', openNav)

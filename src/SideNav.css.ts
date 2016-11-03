@@ -1,4 +1,8 @@
-export default `
+/**
+ * Created by tushar.mathur on 03/11/16.
+ */
+
+export const css = () => `
   <style>
     .side-nav-container {
       position: fixed;
@@ -33,11 +37,4 @@ export default `
       pointer-events: none;
     }
   </style>
-  <div class="side-nav-container">
-    <div class="overlay"></div>
-    <div class="side-nav-slot">
-      <slot/>
-      ul.ss
-    </div>    
-  <div>
 `

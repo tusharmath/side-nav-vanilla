@@ -21,11 +21,12 @@
     "material-design-icons": "^3.0.1",
     "phantomjs-prebuilt": "^2.1.13",
     "rollup": "^0.36.3",
-    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-plugin-commonjs": "^5.0.5",
     "systemjs": "^0.19.40"
   },
   "dependencies": {
     "observable-air": "1.17.1",
+    "preact": "^6.4.0",
     "ramda": "^0.22.1",
     "typescript": "^2.0.6"
   }

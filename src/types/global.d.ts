@@ -1,4 +1,4 @@
-/// <reference path="../typings/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 interface CustomElementRegistry {
   define(name: string, element: Function): void
@@ -10,6 +10,7 @@ interface ShadowMode {
   mode: string
 }
 interface HTMLElement {
+  shadowRoot: DocumentFragment
   attachShadow(mode: ShadowMode): DocumentFragment
 }
 interface DocumentFragment {
