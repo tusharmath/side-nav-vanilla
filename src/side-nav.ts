@@ -1,5 +1,5 @@
-import template from "./template"
-import * as L from "./lib"
+import template from './template'
+import * as L from './lib'
 
 export class SideNav extends HTMLElement {
   private root: DocumentFragment
@@ -9,10 +9,9 @@ export class SideNav extends HTMLElement {
   private startX: number
   private __completion = 0
 
-  constructor() {
+  constructor () {
     super()
-    this.bind()
-    this.root = this.attachShadow({ mode: "open" })
+    this.root = this.attachShadow({mode: "open"})
     this.root.innerHTML = template
     this.slotEL = this.root.querySelector(".side-nav-slot") as HTMLElement
     this.containerEL = this.root.querySelector(".side-nav-container") as HTMLElement
@@ -23,22 +22,25 @@ export class SideNav extends HTMLElement {
     this.containerEL.addEventListener("click", this.onEnd)
   }
 
-  private set completion(completion: number) {
+  private set completion (completion: number) {
     if (completion > 0) return
     this.__completion = completion
     this.slotEL.style.transform = `translateX(${completion * 100}%)`
   }
-  private get completion() {
+
+  private get completion () {
     return this.__completion
   }
-  private set animate(value: boolean) {
+
+  private set animate (value: boolean) {
     if (value) {
       this.slotEL.classList.remove("no-anime")
     } else {
       this.slotEL.classList.add("no-anime")
     }
   }
-  private set overlay(value: boolean) {
+
+  private set overlay (value: boolean) {
     if (value) {
       this.containerEL.classList.remove("no-show")
     } else {
@@ -46,24 +48,18 @@ export class SideNav extends HTMLElement {
     }
   }
 
-  private bind() {
-    this.onStart = this.onStart.bind(this)
-    this.onMove = this.onMove.bind(this)
-    this.onEnd = this.onEnd.bind(this)
-  }
-
-  private onStart(event: TouchEvent) {
+  private onStart = (event: TouchEvent) => {
     event.preventDefault()
     this.width = L.bcrWidth(this.slotEL)
     this.startX = L.clientX(event) / this.width
     this.animate = false
   }
 
-  private onMove(event: TouchEvent) {
+  private onMove = (event: TouchEvent) => {
     this.completion = L.clientX(event) / this.width - this.startX
   }
 
-  private onEnd(event: TouchEvent | MouseEvent) {
+  private onEnd = (event: TouchEvent | MouseEvent) => {
     this.animate = true
     if (Math.abs(this.completion) > 0 || event.target.matches(".side-nav-container")) {
       this.hide()
@@ -72,12 +68,12 @@ export class SideNav extends HTMLElement {
     }
   }
 
-  hide() {
+  hide () {
     this.completion = -1.05
     this.overlay = false
   }
 
-  show() {
+  show () {
     this.completion = 0
     this.overlay = true
   }
