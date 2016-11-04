@@ -10,16 +10,6 @@ export {h} from 'preact'
 let result: Element
 const element = document.querySelector('#app')
 
-export class RequestRootTask implements Task {
-  private element: Element
-
-  constructor (private selector: string) {
-  }
-
-  run () {
-    this.element = document.querySelector(this.selector)
-  }
-}
 export class DOMTask implements Task {
   constructor (private view: JSX.Element) {
   }
@@ -39,6 +29,5 @@ export class PreventDefaultTask implements Task {
 
 export default {
   dom: (view: JSX.Element) => new DOMTask(view),
-  preventDefault: (ev: Event) => new PreventDefaultTask(ev),
-  querySelector: (selector: string) => new RequestRootTask(selector)
+  preventDefault: (ev: Event) => new PreventDefaultTask(ev)
 }

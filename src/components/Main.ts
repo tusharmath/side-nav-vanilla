@@ -2,26 +2,28 @@
  * Created by tushar.mathur on 04/11/16.
  */
 
-import {listen} from '../../rwc/ListenerFactory'
+import {dispatcher, EventDispatcher} from '../EventDispatcher'
 import {h} from 'preact'
 import * as O from 'observable-air'
 import t from '../Tasks'
 import SideNav from './SideNav'
 import MenuItems from './MenuItems'
-import {Task} from '../../rwc/Task'
+import {SideNavState} from '../types/SideNavState'
 
-const just = O.Observable.of
-export const view = (vNode: JSX.Element) =>
+export const view = (ev: EventDispatcher, state: SideNavState) =>
   h('div', null,
     h('div', {className: 'horizontal-nav'},
-      h('i', {className: 'material-icons'}, 'menu')
+      h('i', {className: 'material-icons', onClick: ev.get('show')}, 'menu')
     ),
-    vNode
+    SideNav.view(ev, state, MenuItems.view(ev))
   )
 
 export function main () {
-  const listener = listen()
+  const d = dispatcher()
+  const reducer$ = SideNav.reducer(d)
+  const state$ = O.scan((f, v) => f(v), {}, reducer$)
+
   return O.merge([
-    just<Task>(t.dom(view(SideNav.view(listener, {}, MenuItems.view()))))
+    O.map(model => t.dom(view(d, model)), state$)
   ])
 }

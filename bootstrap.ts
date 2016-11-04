@@ -6,4 +6,3 @@ import {main} from './src/components/Main'
 import * as O from 'observable-air'
 
 O.forEach(x => x.run() , main())
-
