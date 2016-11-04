@@ -2,38 +2,37 @@
  * Created by tushar.mathur on 03/11/16.
  */
 
-import * as R from 'ramda'
-import {ITask, IDispatcher} from '../rwc/Types'
+
 import {render, VNode} from 'preact'
+import {Task} from '../rwc/Task'
 export {h} from 'preact'
 
 let result: Element
 const element = document.querySelector('#app')
 
-export class RequestRootTask implements ITask<Element> {
+export class RequestRootTask implements Task {
   private element: Element
 
   constructor (private selector: string) {
   }
 
-  run (dispatcher: IDispatcher<Element>): void {
+  run () {
     this.element = document.querySelector(this.selector)
-    dispatcher.dispatch('@@dom/select-root', this.element)
   }
 }
-export class DOMTask implements ITask<void> {
+export class DOMTask implements Task {
   constructor (private view: JSX.Element) {
   }
 
-  run (): void {
+  run () {
     result = render(this.view, element, result)
   }
 }
-export class PreventDefaultTask implements ITask<void> {
+export class PreventDefaultTask implements Task {
   constructor (private event: Event) {
   }
 
-  run (dispatch: IDispatcher<void>): void {
+  run () {
     this.event.preventDefault()
   }
 }

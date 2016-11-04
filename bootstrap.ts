@@ -3,6 +3,7 @@
  */
 
 import {main} from './src/components/Main'
-import {runner} from './rwc/CycleRun'
+import * as O from 'observable-air'
 
-runner(main).run()
+O.forEach(x => x.run() , main())
+

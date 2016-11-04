@@ -2,13 +2,13 @@
  * Created by tushar.mathur on 04/11/16.
  */
 
-import {EventListenerCache} from '../../rwc/ListenerFactory'
+import {listen} from '../../rwc/ListenerFactory'
 import {h} from 'preact'
-import {IDispatcher, ITask} from '../../rwc/Types'
 import * as O from 'observable-air'
 import t from '../Tasks'
 import SideNav from './SideNav'
 import MenuItems from './MenuItems'
+import {Task} from '../../rwc/Task'
 
 const just = O.Observable.of
 export const view = (vNode: JSX.Element) =>
@@ -19,9 +19,9 @@ export const view = (vNode: JSX.Element) =>
     vNode
   )
 
-export function main (dispatcher: IDispatcher<Event>) {
-  const listener = new EventListenerCache(dispatcher)
+export function main () {
+  const listener = listen()
   return O.merge([
-    just<ITask<void>>(t.dom(view(SideNav.view(listener, {}, MenuItems.view()))))
+    just<Task>(t.dom(view(SideNav.view(listener, {}, MenuItems.view()))))
   ])
 }
