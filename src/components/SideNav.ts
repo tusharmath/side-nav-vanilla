@@ -42,7 +42,7 @@ export const reducer = (ev: Dispatcher<Event>) => {
   const touchStart$ = ev.select('touchStart')
   const touchMove$ = ev.select('touchMove')
   const touchEnd$ = ev.select('touchEnd')
-  const hide$ = ev.select('hide')
+  const hide$ = O.merge([ev.select('hide'), ev.select('click')])
   const show$ = ev.select('show')
   return O.merge([
     O.map(touchStartR, touchStart$),
@@ -59,14 +59,12 @@ export const view = R.curry((f: EventDispatcher, state: SideNavState, children: 
       className: `side-nav-container ${state.isMoving ? 'no-anime' : ''} ${state.completion < -1 ? 'no-show' : ''}`,
       onTouchMove: f.get('touchMove'),
       onTouchStart: f.get('touchStart'),
-      onTouchEnd: f.get('touchEnd'),
-      onClick: f.get('overlay.click')
+      onTouchEnd: f.get('touchEnd')
     },
     h("div", {
       className: 'overlay',
       style: {opacity: opacityCSS(state.completion)},
-      onTouchEnd: f.get('overlay.touchEnd'),
-      onClick: f.get('overlay.click')
+      onClick: f.get('click')
     }),
     h("div", {
         style: {transform: translateCSS(state.completion)},
