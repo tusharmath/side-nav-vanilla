@@ -4,7 +4,7 @@
 
 import {IDispatcher} from './Types'
 
-export class ListenerFactory {
+export class EventListenerCache {
   private cache = new Map<string, EventListener>()
 
   constructor (private dispatcher: IDispatcher<Event>) {
@@ -19,5 +19,5 @@ export class ListenerFactory {
 }
 
 export function listen (dispatcher: IDispatcher<Event>) {
-  return new ListenerFactory(dispatcher)
+  return new EventListenerCache(dispatcher)
 }

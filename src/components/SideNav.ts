@@ -1,13 +1,16 @@
 /**
- * Created by tushar.mathur on 03/11/16.
+ * Created by tushar.mathur on 04/11/16.
  */
 
+import {EventListenerCache} from '../../rwc/ListenerFactory'
 import {h} from 'preact'
 import * as R from 'ramda'
-import {ListenerFactory} from '../rwc/ListenerFactory'
-import {IState} from './types/IState'
 
-export const view = R.curry((f: ListenerFactory, state: IState) =>
+interface ISideNavState {
+
+}
+
+export const view = R.curry((f: EventListenerCache, state: ISideNavState, children: JSX.Element) =>
   h("div", {
       className: 'side-nav-container',
       onTouchMove: f.of('container.touchMove'),
@@ -21,7 +24,9 @@ export const view = R.curry((f: ListenerFactory, state: IState) =>
       onClick: f.of('overlay.click')
     }),
     h("div", {className: 'side-nav-slot'},
-      h("slot", null)
+      children
     )
-  ))
+  )
+)
 
+export default {view}

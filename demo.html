@@ -2,64 +2,16 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<title>Paper Side Navigation</title>
-	<link rel="stylesheet" href="node_modules/material-design-icons/iconfont/material-icons.css">
-	<style>
-		html,
-		body {
-			margin: 0;
-			padding: 0;
-			font-family: Arial;
-		}
+  <meta charset="UTF-8">
+  <title>Paper Side Navigation</title>
 
-		.nav {
-			margin: 0;
-			padding: 60px 0 0;
-			list-style-type: none;
-			color: red;
-		}
-
-		.nav li {
-			padding: 10px;
-		}
-
-		.nav li:hover {
-			background-color: #EEE;
-		}
-
-		.nav-title {
-			font-size: 2em;
-			padding: 20px
-		}
-
-		.horizontal-nav {
-			background-color: #333;
-			color: #FFF;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-		}
-
-		.material-icons {
-			height: 50px;
-			width: 50px;
-			align-items: center;
-			display: flex;
-			justify-content: center;
-			cursor: pointer;
-		}
-
-		.navbar-header {
-			height: 25%;
-			background-color: rgb(85, 107, 214);
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-			color: rgb(255, 255, 255);
-		}
-	</style>
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<script src="node_modules/systemjs/dist/system.js"></script>
-	<script>
+  <link rel="stylesheet"
+        href="node_modules/material-design-icons/iconfont/material-icons.css">
+  <link rel="stylesheet" href="demo.css">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, user-scalable=no">
+  <script src="node_modules/systemjs/dist/system.js"></script>
+  <script>
     SystemJS.defaultJSExtensions = true;
     SystemJS.config({
       paths: {
@@ -69,48 +21,11 @@
       packageConfigPaths: ['./node_modules/*/package.json']
     })
   </script>
-	<script>SystemJS.import('dist/register.js');</script>
+  <script>SystemJS.import('dist/bootstrap.js');</script>
 </head>
 
 <body>
-	<div class="horizontal-nav">
-		<i class="material-icons js--button-open">menu</i>
-	</div>
-	<x-side-nav>
-		<div class="navbar-header">
-			<div>
-				<i class="material-icons js--button-close">close</i>
-			</div>
-			<div class="nav-title">Side Nav Demo</div>
-		</div>
-		<ul class='nav'>
-			<li>One</li>
-			<li>Two</li>
-			<li>Three</li>
-			<li>Four</li>
-			<li>Five</li>
-		</ul>
-	</x-side-nav>
-	<script>
-		const nav = document.querySelector('x-side-nav')
-		const buttonOpen = document.querySelector('.js--button-open')
-		function openNav (ev) {
-			nav.show()
-			ev.preventDefault()
-		}
-		buttonOpen.addEventListener('click', openNav)
-		buttonOpen.addEventListener('touchend', openNav)
-		function closeNav (ev)  {
-			if(ev.target.matches('.js--button-close')) {
-				nav.hide()
-			}
-			ev.preventDefault()
-		}
-		nav.addEventListener('click', ev => {
-			closeNav(ev)
-		})
-		nav.addEventListener('touchstart', closeNav)
-	</script>
+<div id="app"></div>
 </body>
 
 </html>

@@ -16,8 +16,12 @@ export interface ITask<T> {
 
 export interface IDispatcher<T> {
   dispatch (type: string, params?: T): void
+  select<T>(type: string): O.IObservable<T>
 }
 
 export interface IMain<T> {
   (el: ReactiveHTMLElement, $: O.IObservable<IAction<T>>): O.IObservable<ITask<T>>
+}
+export interface IMainFunction<T> {
+  (root: IDispatcher<T>): O.IObservable<ITask<T>>
 }

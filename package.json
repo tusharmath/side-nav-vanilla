@@ -25,6 +25,7 @@
     "systemjs": "^0.19.40"
   },
   "dependencies": {
+    "hyperscript-helpers": "^3.0.1",
     "observable-air": "1.17.1",
     "preact": "^6.4.0",
     "ramda": "^0.22.1",

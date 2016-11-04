@@ -2,19 +2,19 @@
  * Created by tushar.mathur on 03/11/16.
  */
 
-
+/*
 import * as O from 'observable-air'
-import * as T from './Tasks'
+import T from './Tasks'
 import * as R from 'ramda'
 import {view} from './SideNav.view'
 import {ReactiveHTMLElement} from '../rwc/ReactiveHTMLElement'
 import {listen} from '../rwc/ListenerFactory'
-import {IState} from './types/IState'
+import {ISideNavState} from './types/IState'
 
 const just = <T> (value: T) => O.fromArray([value])
 
 
-type Reducer = { (s: IState): IState }
+type Reducer = { (s: ISideNavState): ISideNavState }
 //
 const TRANSLATE_END = -1.05
 const clientX = (ev: TouchEvent) => ev.changedTouches[0].clientX
@@ -27,19 +27,19 @@ const initialState = (q: { rootEL: HTMLElement, touchStart: TouchEvent }) => ({
   completion: 0,
   isMoving: true
 })
-const touchStartR = R.curry((rootEL: HTMLElement, touchStart: TouchEvent, state: IState) =>
+const touchStartR = R.curry((rootEL: HTMLElement, touchStart: TouchEvent, state: ISideNavState) =>
   initialState({rootEL, touchStart}))
-const touchEndR = R.curry((touchEnd: TouchEvent, state: IState) => {
+const touchEndR = R.curry((touchEnd: TouchEvent, state: ISideNavState) => {
   const value = completion(state.width, state.startX, clientX(touchEnd))
   if (value < 0 || value === 0 && touchEnd.target.matches(".overlay"))
     return R.merge(state, {completion: TRANSLATE_END, isMoving: false})
   return R.assoc("isMoving", false, state)
 })
-const visibilityR = R.curry((isVisible: boolean, state: IState) => {
+const visibilityR = R.curry((isVisible: boolean, state: ISideNavState) => {
   const completion = isVisible ? 0 : TRANSLATE_END
   return R.merge(state, {completion, isMoving: false})
 })
-const touchMoveR = R.curry((touchMove: TouchEvent, state: IState) => {
+const touchMoveR = R.curry((touchMove: TouchEvent, state: ISideNavState) => {
   const value = completion(state.width, state.startX, clientX(touchMove))
   if (value > 0) return R.assoc("completion", 0, state)
   return R.assoc("completion", value, state)
@@ -66,10 +66,12 @@ export function main (root: ReactiveHTMLElement) {
     O.map(visibilityR, isVisible$),
     just(R.identity)
   ])
-  const model$ = O.scan((memory: IState, curr: Reducer) => curr(memory), null, reducer$)
+  const model$ = O.scan((memory: ISideNavState, curr: Reducer) => curr(memory), null, reducer$)
   O.forEach(x => console.log(x), model$)
   const view$ = O.map(view(listeners), model$)
   return O.merge([
     O.map(T.dom(shadowRoot), view$)
   ])
 }
+
+*/
