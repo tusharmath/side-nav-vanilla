@@ -2,13 +2,14 @@ import template from './template'
 import * as L from './lib'
 
 export class SideNav extends HTMLElement {
-  private root: DocumentFragment
-  private slotEL: HTMLElement
-  private containerEL: HTMLElement
-  private width: number
-  private startX: number
   private __completion = 0
   private canSet = true
+  private containerEL: HTMLElement
+  private overlayEL: HTMLElement
+  private root: DocumentFragment
+  private slotEL: HTMLElement
+  private startX: number
+  private width: number
 
   constructor () {
     super()
@@ -16,6 +17,7 @@ export class SideNav extends HTMLElement {
     this.root.innerHTML = template
     this.slotEL = this.root.querySelector(".side-nav-slot") as HTMLElement
     this.containerEL = this.root.querySelector(".side-nav-container") as HTMLElement
+    this.overlayEL = this.root.querySelector(".overlay") as HTMLElement
     this.style.display = "inherit"
     this.containerEL.addEventListener("touchstart", this.onStart)
     this.containerEL.addEventListener("touchmove", this.onMove)
@@ -27,6 +29,7 @@ export class SideNav extends HTMLElement {
     if (completion > 0) completion = 0
     this.__completion = completion
     this.slotEL.style.transform = `translateX(${completion * 100}%)`
+    this.overlayEL.style.opacity = (completion + 1).toString()
   }
 
   private get completion () {
@@ -35,9 +38,9 @@ export class SideNav extends HTMLElement {
 
   private set animate (value: boolean) {
     if (value) {
-      this.slotEL.classList.remove("no-anime")
+      this.containerEL.classList.remove("no-anime")
     } else {
-      this.slotEL.classList.add("no-anime")
+      this.containerEL.classList.add("no-anime")
     }
   }
 

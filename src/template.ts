@@ -6,8 +6,6 @@ export default `
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      transition: background cubic-bezier(0, 0, 0.3, 1) 300ms 300ms;
       cursor: pointer;
       user-select: none; 
     }
@@ -19,15 +17,23 @@ export default `
       will-change: transform;
       transition: transform cubic-bezier(0, 0, 0.3, 1) 300ms 300ms;
     }
-    .no-anime {
+    .no-anime > div {
       transition: none;
     }
     .no-show {
-      pointer-events: none;
-      background-color: transparent;
+      pointer-events: none;      
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      transition: opacity cubic-bezier(0, 0, 0.3, 1) 300ms 300ms;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      left: 0;
     }
   </style>
   <div class="side-nav-container">
+    <div class="overlay"></div>
     <div class="side-nav-slot">
       <slot/>
     </div>
