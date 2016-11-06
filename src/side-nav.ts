@@ -24,7 +24,7 @@ export class SideNav extends HTMLElement {
   }
 
   private set completion (completion: number) {
-    if (completion > 0) return
+    if (completion > 0) completion = 0
     this.__completion = completion
     this.slotEL.style.transform = `translateX(${completion * 100}%)`
   }
