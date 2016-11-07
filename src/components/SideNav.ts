@@ -47,14 +47,14 @@ export const reducer = (ev: Dispatcher<Event>) => {
   return O.merge([
     O.map(touchStartR, touchStart$),
     O.map(touchEndR, touchEnd$),
-    O.map(touchMoveR, O.rafThrottle(touchMove$)),
+    O.map(touchMoveR, touchMove$),
     O.Observable.of(R.identity),
     O.map(R.always(onShow), show$),
     O.map(R.always(onHide), hide$)
   ])
 }
 
-export const view = R.curry((f: EventDispatcher, state: SideNavState, children: JSX.Element) =>
+export const view = (f: EventDispatcher, state: SideNavState, children: JSX.Element) =>
   h("div", {
       className: `side-nav-container ${state.isMoving ? 'no-anime' : ''} ${state.completion < -1 ? 'no-show' : ''}`,
       onTouchMove: f.get('touchMove'),
@@ -73,6 +73,5 @@ export const view = R.curry((f: EventDispatcher, state: SideNavState, children: 
       children
     )
   )
-)
 
 export default {view, reducer}

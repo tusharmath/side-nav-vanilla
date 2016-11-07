@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "hyperscript-helpers": "^3.0.1",
-    "observable-air": "^1.17.2",
+    "observable-air": "^1.18.1",
     "preact": "^6.4.0",
     "ramda": "^0.22.1",
     "typescript": "^2.0.6"
