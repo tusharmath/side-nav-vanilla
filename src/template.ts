@@ -1,5 +1,6 @@
 export default `
   <style>
+    
     .side-nav-container {
       position: fixed;
       top: 0;
@@ -7,7 +8,8 @@ export default `
       width: 100%;
       height: 100%;
       cursor: pointer;
-      user-select: none; 
+      user-select: none;
+      -webkit-tap-highlight-color:  rgba(255, 255, 255, 0); 
     }
     .side-nav-slot {
       background-color: #FFF;
@@ -32,6 +34,10 @@ export default `
       width: 100%;
       left: 0;
     }
+    .transition-quick {
+      transition-duration: 100ms;
+      transition-timing-function: cubic-bezier(0, 0, 0, 1);
+    } 
   </style>
   <div class="side-nav-container">
     <div class="overlay"></div>

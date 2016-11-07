@@ -23,6 +23,7 @@ export class SideNav extends HTMLElement {
     this.containerEL.addEventListener("touchmove", this.onMove)
     this.containerEL.addEventListener("touchend", this.onEnd)
     this.containerEL.addEventListener("click", this.onEnd)
+    this.overlayEL.addEventListener("click", this.hide)
   }
 
   private set completion (completion: number) {
@@ -53,13 +54,13 @@ export class SideNav extends HTMLElement {
   }
 
   private onStart = (event: TouchEvent) => {
-    event.preventDefault()
     this.width = L.bcrWidth(this.slotEL)
     this.startX = L.clientX(event) / this.width
     this.animate = false
   }
 
   private onMove = (event: TouchEvent) => {
+    event.preventDefault()
     if (this.canSet) {
       this.completion = L.clientX(event) / this.width - this.startX
       this.canSet = false
@@ -80,13 +81,16 @@ export class SideNav extends HTMLElement {
     }
   }
 
-  hide () {
+  hide = () => {
+    this.slotEL.classList.add('transition-quick')
     this.completion = -1.05
     this.overlay = false
   }
 
-  show () {
+  show = () => {
+    this.slotEL.classList.remove('transition-quick')
     this.completion = 0
     this.overlay = true
+
   }
 }
