@@ -63,8 +63,12 @@ export class SideNav extends HTMLElement {
     if (this.canSet) {
       this.completion = L.clientX(event) / this.width - this.startX
       this.canSet = false
-      requestAnimationFrame(() => this.canSet = true)
+      requestAnimationFrame(this.onFrame)
     }
+  }
+
+  private onFrame = () => {
+    this.canSet = true
   }
 
   private onEnd = (event: TouchEvent | MouseEvent) => {

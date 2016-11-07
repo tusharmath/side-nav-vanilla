@@ -26,6 +26,7 @@ export default `
     .overlay {
       background-color: rgba(0, 0, 0, 0.6);
       transition: opacity cubic-bezier(0, 0, 0.3, 1) 300ms 300ms;
+      will-change: opacity;
       height: 100%;
       position: absolute;
       width: 100%;
