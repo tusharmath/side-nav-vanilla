@@ -82,7 +82,6 @@ export class SideNav extends HTMLElement {
     super()
     const root = this.attachShadow({mode: "open"})
     root.innerHTML = template
-    this.style.display = "inherit"
     this.subscription = O.forEach(this.onValue, main(this, this.isVisible$))
   }
 
