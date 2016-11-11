@@ -38,12 +38,16 @@ const touchMoveR = R.curry((touchMove: TouchEvent, state: IState) => {
   if (value > 0) return R.assoc("completion", 0, state)
   return R.assoc("completion", value, state)
 })
-const model = (source: ISource) => {
+const model = (rootEL: HTMLElement,
+               touchStart$: O.IObservable<TouchEvent>,
+               touchMove$: O.IObservable<TouchEvent>,
+               touchEnd$: O.IObservable<TouchEvent>,
+               isVisible$: O.IObservable<boolean>) => {
   const reducer$ = O.merge([
-    O.map(touchStartR(source.rootEL), source.touchStart$),
-    O.map(touchEndR, source.touchEnd$),
-    O.map(touchMoveR, source.touchMove$),
-    O.map(visibilityR, source.isVisible$)
+    O.map(touchStartR(rootEL), touchStart$),
+    O.map(touchEndR, touchEnd$),
+    O.map(touchMoveR, touchMove$),
+    O.map(visibilityR, isVisible$)
   ])
   return O.scan((curr: Reducer, memory: IState) => curr(memory), null, reducer$)
 }
@@ -51,18 +55,38 @@ const overlayClicks = R.compose(
   O.map(D.preventDefault),
   O.filter((x: Event) => x.target.matches(".overlay"))
 )
-export function main (source: ISource) {
-  const opacity = R.compose(D.style(source.overlayEL, "opacity"), opacityCSS)
-  const translateX = R.compose(D.style(source.slotEL, "transform"), translateCSS)
+const effects = (overlayEL: HTMLElement,
+                 slotEL: HTMLElement,
+                 containerEL: HTMLElement,
+                 rootEL: HTMLElement,
+                 touchStart$: O.IObservable<TouchEvent>,
+                 touchMove$: O.IObservable<TouchEvent>,
+                 touchEnd$: O.IObservable<TouchEvent>,
+                 isVisible$: O.IObservable<boolean>) => {
+  const opacity = R.compose(D.style(overlayEL, "opacity"), opacityCSS)
+  const translateX = R.compose(D.style(slotEL, "transform"), translateCSS)
+  const model$ = model(rootEL, touchStart$, touchMove$, touchEnd$, isVisible$)
   return O.merge([
     O.map((e: IState) => D.combine(
-      D.toggleClass(source.containerEL, "no-anime", e.isMoving),
+      D.toggleClass(containerEL, "no-anime", e.isMoving),
       translateX(e.completion),
       opacity(e.completion),
-      D.toggleClass(source.containerEL, "no-show", e.completion < -1)
-    ), model(source)),
-    overlayClicks(source.touchStart$)
+      D.toggleClass(containerEL, "no-show", e.completion < -1)
+    ), model$),
+    overlayClicks(touchStart$)
   ])
+}
+export function main (source: ISource) {
+  return effects(
+    source.overlayEL,
+    source.slotEL,
+    source.containerEL,
+    source.rootEL,
+    source.touchStart$,
+    source.touchMove$,
+    source.touchEnd$,
+    source.isVisible$
+  )
 }
 export class SideNav extends HTMLElement {
   private subscription: O.ISubscription
