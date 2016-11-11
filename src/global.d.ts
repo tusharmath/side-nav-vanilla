@@ -11,6 +11,7 @@ interface ShadowMode {
 }
 interface HTMLElement {
   attachShadow(mode: ShadowMode): DocumentFragment
+  shadowRoot: HTMLElement
 }
 interface DocumentFragment {
   innerHTML: string
