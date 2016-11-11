@@ -1,10 +1,10 @@
-import * as O from "observable-air"
-import * as R from "ramda"
-import template from "./template"
-import D from "./dom-tasks"
-import { ITask } from "./types/ITask"
-import { ISource } from "./types/ISource"
-import { IState } from "./types/IState"
+import * as O from 'observable-air'
+import * as R from 'ramda'
+import template from './template'
+import D from './dom-tasks'
+import {ITask} from './types/ITask'
+import {ISource} from './types/ISource'
+import {IState} from './types/IState'
 
 type Reducer = { (s: IState): IState }
 
@@ -19,16 +19,19 @@ const initialState = (q: { rootEL: HTMLElement, touchStart: TouchEvent }) => ({
   completion: 0,
   isMoving: true
 })
-const touchStartR = R.curry((rootEL: HTMLElement, touchStart: TouchEvent, state: IState) => initialState({ rootEL, touchStart }))
+const touchStartR = R.curry((rootEL: HTMLElement, touchStart: TouchEvent, state: IState) => initialState({
+  rootEL,
+  touchStart
+}))
 const touchEndR = R.curry((touchEnd: TouchEvent, state: IState) => {
   const value = completion(state.width, state.startX, clientX(touchEnd))
   if (value < 0 || value === 0 && touchEnd.target.matches(".overlay"))
-    return R.merge(state, { completion: TRANSLATE_END, isMoving: false })
+    return R.merge(state, {completion: TRANSLATE_END, isMoving: false})
   return R.assoc("isMoving", false, state)
 })
 const visibilityR = R.curry((isVisible: boolean, state: IState) => {
   const completion = isVisible ? 0 : TRANSLATE_END
-  return R.merge(state, { completion, isMoving: false })
+  return R.merge(state, {completion, isMoving: false})
 })
 const touchMoveR = R.curry((touchMove: TouchEvent, state: IState) => {
   const value = completion(state.width, state.startX, clientX(touchMove))
@@ -39,16 +42,16 @@ const model = (source: ISource) => {
   const reducer$ = O.merge([
     O.map(touchStartR(source.rootEL), source.touchStart$),
     O.map(touchEndR, source.touchEnd$),
-    O.map(touchMoveR, O.rafThrottle(source.touchMove$)),
+    O.map(touchMoveR, source.touchMove$),
     O.map(visibilityR, source.isVisible$)
   ])
-  return O.scan((memory: IState, curr: Reducer) => curr(memory), null, reducer$)
+  return O.scan((curr: Reducer, memory: IState) => curr(memory), null, reducer$)
 }
 const overlayClicks = R.compose(
   O.map(D.preventDefault),
   O.filter((x: Event) => x.target.matches(".overlay"))
 )
-export function main(source: ISource) {
+export function main (source: ISource) {
   const opacity = R.compose(D.style(source.overlayEL, "opacity"), opacityCSS)
   const translateX = R.compose(D.style(source.slotEL, "transform"), translateCSS)
   return O.merge([
@@ -65,9 +68,9 @@ export class SideNav extends HTMLElement {
   private subscription: O.ISubscription
   private observer: O.IObserver<boolean>
 
-  constructor() {
+  constructor () {
     super()
-    const root = this.attachShadow({ mode: "open" })
+    const root = this.attachShadow({mode: "open"})
     root.innerHTML = template
     this.style.display = "inherit"
     const slotEL = root.querySelector(".side-nav-slot") as HTMLElement
@@ -88,19 +91,19 @@ export class SideNav extends HTMLElement {
     }))
   }
 
-  private onValue(task: ITask) {
+  private onValue (task: ITask) {
     task.run()
   }
 
-  disconnectedCallback() {
+  disconnectedCallback () {
     this.subscription.unsubscribe()
   }
 
-  show() {
+  show () {
     this.observer.next(true)
   }
 
-  hide() {
+  hide () {
     this.observer.next(false)
   }
 }
