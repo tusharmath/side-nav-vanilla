@@ -41,12 +41,12 @@ const model = (rootEL: HTMLElement,
                touchMove$: O.IObservable<TouchEvent>,
                touchEnd$: O.IObservable<TouchEvent>,
                isVisible$: O.IObservable<boolean>) => {
-  const reducer$ = O.merge([
+  const reducer$ = O.merge(
     O.map(touchStartR(rootEL), touchStart$),
     O.map(touchEndR, touchEnd$),
     O.map(touchMoveR, touchMove$),
     O.map(visibilityR, isVisible$)
-  ])
+  )
   return O.scan((curr: Reducer, memory: IState) => curr(memory), null, reducer$)
 }
 const overlayClicks = R.compose(
@@ -72,19 +72,16 @@ const fromInnerHTML = R.curry((isVisible$: O.IObservable<boolean>, rootEL: HTMLE
     opacity(e.completion),
     D.toggleClass(containerEL, "no-show", e.completion < -1)
   )
-  return O.merge([
+  return O.merge(
     O.map(mainReducer, model$),
     overlayClicks(touchStart$)
-  ])
+  )
 })
 const querySelector = R.curry((root: HTMLElement, selector: string) => root.querySelector(selector) as HTMLElement)
 export function main (rootEL: HTMLElement, isVisible$: O.IObservable<boolean>) {
   const setInnerHTML = D.innerHTML(rootEL.shadowRoot, template)
   const task$ = O.join(O.map(fromInnerHTML(isVisible$), setInnerHTML.value$))
-  return O.merge([
-    task$,
-    O.fromArray([setInnerHTML])
-  ])
+  return O.merge(task$, O.of(setInnerHTML))
 }
 export class SideNav extends HTMLElement {
   private subscription: O.ISubscription
