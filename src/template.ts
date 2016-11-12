@@ -21,7 +21,8 @@ export default `
     .side-nav-slot {
       background-color: #FFF;
       height: 100%;
-      width: 300px;
+      width: 90%;
+      max-width: 400px;
       box-shadow: 14px 0px 15px -7px rgba(0, 0, 0, 0.6);
       will-change: transform;
       transition: transform cubic-bezier(0, 0, 0.3, 1) 300ms;

@@ -58,6 +58,7 @@ export class SetInnerHTMLTask implements IValueTask<HTMLElement> {
   }
 }
 export default {
+  querySelector: R.curry((root: HTMLElement, selector: string) => root.querySelector(selector) as HTMLElement),
   innerHTML: (el: HTMLElement, value: string) => new SetInnerHTMLTask(el, value),
   style: R.curry((element: HTMLElement, property: string, value: string) => new SetStyleTask(element, property, value)),
   preventDefault: (event: Event) => new PreventDefaultTask(event),
