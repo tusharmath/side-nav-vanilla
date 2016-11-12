@@ -53,10 +53,12 @@ const overlayClicks = R.compose(
   O.map(D.preventDefault),
   O.filter((x: Event) => x.target.matches(".overlay"))
 )
-export function main (rootEL: HTMLElement, isVisible$: O.IObservable<boolean>) {
-  const slotEL = rootEL.shadowRoot.querySelector(".side-nav-slot") as HTMLElement
-  const containerEL = rootEL.shadowRoot.querySelector(".side-nav-container") as HTMLElement
-  const overlayEL = rootEL.shadowRoot.querySelector(".overlay") as HTMLElement
+const fromInnerHTML = R.curry((isVisible$: O.IObservable<boolean>, rootEL: HTMLElement) => {
+  const queryRootEL = querySelector(rootEL)
+  const slotEL = queryRootEL(".side-nav-slot")
+  const containerEL = queryRootEL(".side-nav-container")
+  const overlayEL = queryRootEL(".overlay")
+
   const containerEV = O.fromDOM(containerEL)
   const touchStart$ = containerEV("touchstart")
   const touchMove$ = containerEV("touchmove")
@@ -64,14 +66,24 @@ export function main (rootEL: HTMLElement, isVisible$: O.IObservable<boolean>) {
   const opacity = R.compose(D.style(overlayEL, "opacity"), opacityCSS)
   const translateX = R.compose(D.style(slotEL, "transform"), translateCSS)
   const model$ = model(slotEL, touchStart$, touchMove$, touchEnd$, isVisible$)
+  const mainReducer = (e: IState) => D.combine(
+    D.toggleClass(containerEL, "no-anime", e.isMoving),
+    translateX(e.completion),
+    opacity(e.completion),
+    D.toggleClass(containerEL, "no-show", e.completion < -1)
+  )
   return O.merge([
-    O.map((e: IState) => D.combine(
-      D.toggleClass(containerEL, "no-anime", e.isMoving),
-      translateX(e.completion),
-      opacity(e.completion),
-      D.toggleClass(containerEL, "no-show", e.completion < -1)
-    ), model$),
+    O.map(mainReducer, model$),
     overlayClicks(touchStart$)
+  ])
+})
+const querySelector = R.curry((root: HTMLElement, selector: string) => root.querySelector(selector) as HTMLElement)
+export function main (rootEL: HTMLElement, isVisible$: O.IObservable<boolean>) {
+  const setInnerHTML = D.innerHTML(rootEL.shadowRoot, template)
+  const task$ = O.join(O.map(fromInnerHTML(isVisible$), setInnerHTML.value$))
+  return O.merge([
+    task$,
+    O.fromArray([setInnerHTML])
   ])
 }
 export class SideNav extends HTMLElement {
@@ -80,8 +92,7 @@ export class SideNav extends HTMLElement {
 
   constructor () {
     super()
-    const root = this.attachShadow({mode: "open"})
-    root.innerHTML = template
+    this.attachShadow({mode: "open"})
     this.subscription = O.forEach(this.onValue, main(this, this.isVisible$))
   }
 

@@ -1,5 +1,6 @@
 import * as R from 'ramda'
-import {ITask} from './types/ITask'
+import * as O from 'observable-air'
+import {ITask, IValueTask} from './types/ITask'
 
 export class SetStyleTask implements ITask {
   constructor (private element: HTMLElement,
@@ -45,7 +46,19 @@ export class ToggleClassTask implements ITask {
     }
   }
 }
+export class SetInnerHTMLTask implements IValueTask<HTMLElement> {
+  value$ = O.subject<HTMLElement>()
+
+  constructor (private el: HTMLElement, private html: string) {
+  }
+
+  run () {
+    this.el.innerHTML = this.html
+    this.value$.next(this.el)
+  }
+}
 export default {
+  innerHTML: (el: HTMLElement, value: string) => new SetInnerHTMLTask(el, value),
   style: R.curry((element: HTMLElement, property: string, value: string) => new SetStyleTask(element, property, value)),
   preventDefault: (event: Event) => new PreventDefaultTask(event),
   combine: (...tasks: Array<ITask>) => new TaskList(tasks),
