@@ -8,7 +8,7 @@ import {Action} from './Action'
 
 const params = <T> (x: Action<T>) => x.params
 export class Dispatcher<T> {
-  private subject: O.IObservable<Action<T>> & O.IObserver<Action<T>> = O.subject()
+  private subject: O.ISubject<Action<T>> = O.subject()
 
 
   dispatch (type: string, params: T = null) {
