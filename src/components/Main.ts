@@ -21,7 +21,7 @@ export const view = (d: Dispatcher<Event>, state: SideNavState, menuItems: JSX.E
 
 export function main () {
   const d = dispatcher()
-  const reducer$ = SideNav.reducer(d)
+  const reducer$ = SideNav.update(d)
   const state$ = O.scan((f, v) => f(v), {}, reducer$)
   const menuItemsView = MenuItems.view(d)
   const horizontalNavView = HorizontalNav(d)

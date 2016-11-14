@@ -37,7 +37,7 @@ const touchMoveR = R.curry((touchMove: TouchEvent, state: SideNavState) => {
 const onShow = R.assoc('completion', 0)
 const onHide = R.assoc('completion', TRANSLATE_END)
 
-export const reducer = (ev: Dispatcher<Event>) => {
+export const update = (ev: Dispatcher<Event>) => {
   const touchStart$ = ev.select('touchStart')
   const touchMove$ = O.rafThrottle(ev.select('touchMove'))
   const touchEnd$ = ev.select('touchEnd')
@@ -73,4 +73,4 @@ export const view = (f: Dispatcher<Event>, state: SideNavState, children: JSX.El
     )
   )
 
-export default {view, reducer}
+export default {view, update}
