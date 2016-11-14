@@ -1,8 +1,8 @@
 import * as R from 'ramda'
 import * as O from 'observable-air'
-import {ITask, IValueTask} from './types/ITask'
+import {Task, ValueTask} from './types/Task'
 
-export class SetStyleTask implements ITask {
+export class SetStyleTask implements Task {
   constructor (private element: HTMLElement,
                private property: string,
                private value: string) {
@@ -14,7 +14,7 @@ export class SetStyleTask implements ITask {
       style.setProperty(this.property, this.value)
   }
 }
-export class PreventDefaultTask implements ITask {
+export class PreventDefaultTask implements Task {
   constructor (private event: Event) {
   }
 
@@ -23,8 +23,8 @@ export class PreventDefaultTask implements ITask {
       this.event.preventDefault()
   }
 }
-export class TaskList implements ITask {
-  constructor (private tasks: Array<ITask> = []) {
+export class TaskList implements Task {
+  constructor (private tasks: Array<Task> = []) {
   }
 
   run () {
@@ -32,7 +32,7 @@ export class TaskList implements ITask {
       this.tasks[i].run()
   }
 }
-export class ToggleClassTask implements ITask {
+export class ToggleClassTask implements Task {
   constructor (private element: HTMLElement,
                private className: string,
                private show: boolean) {
@@ -46,7 +46,7 @@ export class ToggleClassTask implements ITask {
     }
   }
 }
-export class SetInnerHTMLTask implements IValueTask<HTMLElement> {
+export class SetInnerHTMLTask implements ValueTask<HTMLElement> {
   value$ = O.subject<HTMLElement>()
 
   constructor (private el: HTMLElement, private html: string) {
@@ -62,6 +62,6 @@ export default {
   innerHTML: (el: HTMLElement, value: string) => new SetInnerHTMLTask(el, value),
   style: R.curry((element: HTMLElement, property: string, value: string) => new SetStyleTask(element, property, value)),
   preventDefault: (event: Event) => new PreventDefaultTask(event),
-  combine: (...tasks: Array<ITask>) => new TaskList(tasks),
+  combine: (...tasks: Array<Task>) => new TaskList(tasks),
   toggleClass: R.curry((element: HTMLElement, className: string, show: boolean) => new ToggleClassTask(element, className, show))
 }

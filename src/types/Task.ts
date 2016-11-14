@@ -1,9 +1,9 @@
 import * as O from 'observable-air'
 
-export interface ITask {
+export interface Task {
   run(): void
 }
 
-export interface IValueTask<T> extends ITask {
+export interface ValueTask<T> extends Task {
   readonly value$: O.IObservable<T>
 }

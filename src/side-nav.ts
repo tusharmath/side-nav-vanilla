@@ -2,8 +2,8 @@ import * as O from 'observable-air'
 import * as R from 'ramda'
 import template from './template'
 import D from './dom-tasks'
-import {ITask} from './types/ITask'
-import {IState} from './types/IState'
+import {Task} from './types/Task'
+import {IState} from './types/State'
 
 type Reducer = { (s: IState): IState }
 
@@ -63,7 +63,7 @@ const fromInnerHTML = R.curry((isVisible$: O.IObservable<boolean>, rootEL: HTMLE
   const reducer$ = O.merge(
     O.map(touchStartR(el.slotEL), ev('touchstart')),
     O.map(touchEndR, ev('touchend')),
-    O.map(touchMoveR, ev('touchmove')),
+    O.map(touchMoveR, O.rafThrottle(ev('touchmove'))),
     O.map(visibilityR, isVisible$)
   )
   const model$ = O.scan((curr: Reducer, memory: IState) => curr(memory), null, reducer$)
@@ -90,7 +90,7 @@ export class SideNav extends HTMLElement {
     this.subscription = O.forEach(this.onValue, main(this, this.isVisible$))
   }
 
-  private onValue (task: ITask) {
+  private onValue (task: Task) {
     task.run()
   }
 
