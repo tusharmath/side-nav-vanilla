@@ -20,11 +20,11 @@ export const view = (d: Dispatcher<Event>, state: Model, menuItems: JSX.Element,
   )
 
 export function main () {
-  const d = dispatcher()
-  const reducer$ = SideNav.update(d)
-  const state$ = O.scan((f, v) => f(v), {}, reducer$)
-  const menuItemsView = MenuItems.view(d)
-  const horizontalNavView = HorizontalNav(d)
+  const snDispatcher = dispatcher()
+  const snReducer$ = SideNav.update(snDispatcher)
+  const state$ = O.scan((f, v) => f(v), SideNav.init(), snReducer$)
+  const menuItemsView = MenuItems.view(snDispatcher)
+  const horizontalNavView = HorizontalNav(snDispatcher)
 
-  return O.map(model => t.dom(view(d, model, menuItemsView, horizontalNavView)), state$)
+  return O.map(model => t.dom(view(snDispatcher, model, menuItemsView, horizontalNavView)), state$)
 }

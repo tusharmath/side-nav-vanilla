@@ -73,4 +73,11 @@ export const view = (f: Dispatcher<Event>, state: Model, children: JSX.Element) 
     )
   )
 
-export default {view, update}
+export const init = () => ({
+  width: 0,
+  startX: 0,
+  completion: TRANSLATE_END,
+  isMoving: false
+})
+
+export default {view, update, init}
