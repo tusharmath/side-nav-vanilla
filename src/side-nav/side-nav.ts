@@ -1,10 +1,10 @@
 import * as O from 'observable-air'
 import * as R from 'ramda'
 import template from './template'
-import D from './dom-tasks'
-import {Task} from './types/Task'
-import {IState} from './types/State'
-import {Elements} from './types/Elements'
+import D from '../dom-tasks'
+import {Task} from '../types/Task'
+import {IState} from './State'
+import {Elements} from './Elements'
 
 type Reducer = { (s: IState): IState }
 
