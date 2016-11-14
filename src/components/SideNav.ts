@@ -3,7 +3,6 @@
  */
 
 import * as O from 'observable-air'
-import {EventDispatcher} from '../EventDispatcher'
 import {h} from 'preact'
 import * as R from 'ramda'
 import {Dispatcher} from '../../rwc/Dispatcher'
@@ -26,47 +25,47 @@ const touchStartR = R.curry((touchStart: TouchEvent, state: SideNavState) =>
 )
 const touchEndR = R.curry((touchEnd: TouchEvent, state: SideNavState) => {
   const value = completion(state.width, state.startX, clientX(touchEnd))
-  if (value < 0 || value === 0 && touchEnd.target.matches(".overlay"))
+  if (value < 0 || value === 0 && touchEnd.target.matches('.overlay'))
     return R.merge(state, {completion: TRANSLATE_END, isMoving: false})
-  return R.assoc("isMoving", false, state)
+  return R.assoc('isMoving', false, state)
 })
 const touchMoveR = R.curry((touchMove: TouchEvent, state: SideNavState) => {
   const value = completion(state.width, state.startX, clientX(touchMove))
-  if (value > 0) return R.assoc("completion", 0, state)
-  return R.assoc("completion", value, state)
+  if (value > 0) return R.assoc('completion', 0, state)
+  return R.assoc('completion', value, state)
 })
 const onShow = R.assoc('completion', 0)
 const onHide = R.assoc('completion', TRANSLATE_END)
 
 export const reducer = (ev: Dispatcher<Event>) => {
   const touchStart$ = ev.select('touchStart')
-  const touchMove$ = ev.select('touchMove')
+  const touchMove$ = O.rafThrottle(ev.select('touchMove'))
   const touchEnd$ = ev.select('touchEnd')
-  const hide$ = O.merge([ev.select('hide'), ev.select('click')])
+  const hide$ = O.merge(ev.select('hide'), ev.select('click'))
   const show$ = ev.select('show')
-  return O.merge([
+  return O.merge(
     O.map(touchStartR, touchStart$),
     O.map(touchEndR, touchEnd$),
     O.map(touchMoveR, touchMove$),
-    O.Observable.of(R.identity),
+    O.of(R.identity),
     O.map(R.always(onShow), show$),
     O.map(R.always(onHide), hide$)
-  ])
+  )
 }
 
-export const view = (f: EventDispatcher, state: SideNavState, children: JSX.Element) =>
-  h("div", {
+export const view = (f: Dispatcher<Event>, state: SideNavState, children: JSX.Element) =>
+  h('div', {
       className: `side-nav-container ${state.isMoving ? 'no-anime' : ''} ${state.completion < -1 ? 'no-show' : ''}`,
-      onTouchMove: f.get('touchMove'),
-      onTouchStart: f.get('touchStart'),
-      onTouchEnd: f.get('touchEnd')
+      onTouchMove: f.listener('touchMove'),
+      onTouchStart: f.listener('touchStart'),
+      onTouchEnd: f.listener('touchEnd')
     },
-    h("div", {
+    h('div', {
       className: 'overlay',
       style: {opacity: opacityCSS(state.completion)},
-      onClick: f.get('click')
+      onClick: f.listener('click')
     }),
-    h("div", {
+    h('div', {
         style: {transform: translateCSS(state.completion)},
         className: `side-nav-slot`
       },

@@ -21,4 +21,12 @@ export class Dispatcher<T> {
       O.filter((x: Action<T>) => x.type === type, this.subject)
     )
   }
+
+  listener (type: string) {
+    return this.dispatch.bind(this, type)
+  }
+}
+
+export function dispatcher<T> () {
+  return new Dispatcher<T>()
 }
