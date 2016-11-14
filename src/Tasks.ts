@@ -3,7 +3,7 @@
  */
 
 
-import {render, VNode} from 'preact'
+import {render} from 'preact'
 import {Task} from '../rwc/Task'
 export {h} from 'preact'
 
