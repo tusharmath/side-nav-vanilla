@@ -21,9 +21,9 @@ const touchStartR = R.curry((rootEL: HTMLElement, touchStart: TouchEvent, state:
 )
 const touchEndR = R.curry((touchEnd: TouchEvent, state: IState) => {
   const value = completion(state.width, state.startX, clientX(touchEnd))
-  if (value < 0 || value === 0 && touchEnd.target.matches(".overlay"))
+  if (value < 0 || value === 0 && touchEnd.target.matches('.overlay'))
     return R.merge(state, {completion: TRANSLATE_END, isMoving: false})
-  return R.assoc("isMoving", false, state)
+  return R.assoc('isMoving', false, state)
 })
 const visibilityR = R.curry((isVisible: boolean, state: IState) => {
   const completion = isVisible ? 0 : TRANSLATE_END
@@ -31,37 +31,37 @@ const visibilityR = R.curry((isVisible: boolean, state: IState) => {
 })
 const touchMoveR = R.curry((touchMove: TouchEvent, state: IState) => {
   const value = completion(state.width, state.startX, clientX(touchMove))
-  if (value > 0) return R.assoc("completion", 0, state)
-  return R.assoc("completion", value, state)
+  if (value > 0) return R.assoc('completion', 0, state)
+  return R.assoc('completion', value, state)
 })
 
 const overlayClicks = R.compose(
   O.map(D.preventDefault),
-  O.filter((x: Event) => x.target.matches(".overlay"))
+  O.filter((x: Event) => x.target.matches('.overlay'))
 )
 const elements = R.memoize((rootEL: HTMLElement) => {
   const queryRootEL = D.querySelector(rootEL)
   return {
     rootEL,
-    slotEL: queryRootEL(".side-nav-slot"),
-    containerEL: queryRootEL(".side-nav-container"),
-    overlayEL: queryRootEL(".overlay")
+    slotEL: queryRootEL('.side-nav-slot'),
+    containerEL: queryRootEL('.side-nav-container'),
+    overlayEL: queryRootEL('.overlay')
   }
 })
 const mainReducer = R.curry((rootEL: HTMLElement, e: IState) => {
   const el = elements(rootEL)
   return D.combine(
-    D.toggleClass(el.containerEL, "no-anime", e.isMoving),
+    D.toggleClass(el.containerEL, 'no-anime', e.isMoving),
     D.style(el.slotEL, 'transform', translateCSS(e.completion)),
     D.style(el.overlayEL, 'opacity', opacityCSS(e.completion)),
-    D.toggleClass(el.containerEL, "no-show", e.completion < -1)
+    D.toggleClass(el.containerEL, 'no-show', e.completion < -1)
   )
 })
 const fromInnerHTML = R.curry((isVisible$: O.IObservable<boolean>, rootEL: HTMLElement) => {
   const el = elements(rootEL)
   const ev = O.fromDOM(el.containerEL)
   const reducer$ = O.merge(
-    O.map(touchStartR(rootEL), ev('touchstart')),
+    O.map(touchStartR(el.slotEL), ev('touchstart')),
     O.map(touchEndR, ev('touchend')),
     O.map(touchMoveR, ev('touchmove')),
     O.map(visibilityR, isVisible$)
@@ -70,7 +70,7 @@ const fromInnerHTML = R.curry((isVisible$: O.IObservable<boolean>, rootEL: HTMLE
 
   return O.merge(
     O.map(mainReducer(rootEL), model$),
-    overlayClicks(ev("touchstart"))
+    overlayClicks(ev('touchstart'))
   )
 })
 export function main (rootEL: HTMLElement, isVisible$: O.IObservable<boolean>) {
@@ -86,7 +86,7 @@ export class SideNav extends HTMLElement {
 
   constructor () {
     super()
-    this.attachShadow({mode: "open"})
+    this.attachShadow({mode: 'open'})
     this.subscription = O.forEach(this.onValue, main(this, this.isVisible$))
   }
 
