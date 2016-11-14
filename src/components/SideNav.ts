@@ -6,7 +6,7 @@ import * as O from 'observable-air'
 import {h} from 'preact'
 import * as R from 'ramda'
 import {Dispatcher} from '../../rwc/Dispatcher'
-import {SideNavState} from '../types/SideNavState'
+import {Model} from '../types/Model'
 
 
 const TRANSLATE_END = -1.05
@@ -14,22 +14,22 @@ const clientX = (ev: TouchEvent) => ev.changedTouches[0].clientX
 const translateCSS = (completion: number) => `translateX(${completion * 100}%)`
 const completion = (width: number, startX: number, currentX: number) => (currentX - startX) / width
 const opacityCSS = R.compose(R.toString, R.inc)
-const initialState = (touchStart: TouchEvent): SideNavState => ({
+const initialState = (touchStart: TouchEvent): Model => ({
   width: (touchStart.currentTarget as HTMLElement).querySelector('.side-nav-slot').getBoundingClientRect().width,
   startX: clientX(touchStart),
   completion: 0,
   isMoving: true
 })
-const touchStartR = R.curry((touchStart: TouchEvent, state: SideNavState) =>
+const touchStartR = R.curry((touchStart: TouchEvent, state: Model) =>
   initialState(touchStart)
 )
-const touchEndR = R.curry((touchEnd: TouchEvent, state: SideNavState) => {
+const touchEndR = R.curry((touchEnd: TouchEvent, state: Model) => {
   const value = completion(state.width, state.startX, clientX(touchEnd))
   if (value < 0 || value === 0 && touchEnd.target.matches('.overlay'))
     return R.merge(state, {completion: TRANSLATE_END, isMoving: false})
   return R.assoc('isMoving', false, state)
 })
-const touchMoveR = R.curry((touchMove: TouchEvent, state: SideNavState) => {
+const touchMoveR = R.curry((touchMove: TouchEvent, state: Model) => {
   const value = completion(state.width, state.startX, clientX(touchMove))
   if (value > 0) return R.assoc('completion', 0, state)
   return R.assoc('completion', value, state)
@@ -53,7 +53,7 @@ export const update = (ev: Dispatcher<Event>) => {
   )
 }
 
-export const view = (f: Dispatcher<Event>, state: SideNavState, children: JSX.Element) =>
+export const view = (f: Dispatcher<Event>, state: Model, children: JSX.Element) =>
   h('div', {
       className: `side-nav-container ${state.isMoving ? 'no-anime' : ''} ${state.completion < -1 ? 'no-show' : ''}`,
       onTouchMove: f.listener('touchMove'),
