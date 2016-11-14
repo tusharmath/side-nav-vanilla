@@ -4,6 +4,7 @@ import template from './template'
 import D from './dom-tasks'
 import {Task} from './types/Task'
 import {IState} from './types/State'
+import {Elements} from './types/Elements'
 
 type Reducer = { (s: IState): IState }
 
@@ -11,7 +12,7 @@ const TRANSLATE_END = -1.05
 const clientX = (ev: TouchEvent) => ev.changedTouches[0].clientX
 const translateCSS = (completion: number) => `translateX(${completion * 100}%)`
 const completion = (width: number, startX: number, currentX: number) => (currentX - startX) / width
-const opacityCSS = R.compose(R.toString, R.inc)
+const opacityCSS = (completion: number) => (completion + 1).toString()
 const touchStartR = R.curry((rootEL: HTMLElement, touchStart: TouchEvent, state: IState) => ({
     width: rootEL.getBoundingClientRect().width,
     startX: clientX(touchStart),
@@ -39,7 +40,7 @@ const overlayClicks = R.compose(
   O.map(D.preventDefault),
   O.filter((x: Event) => x.target.matches('.overlay'))
 )
-const elements = R.memoize((rootEL: HTMLElement) => {
+const elements = (rootEL: HTMLElement): Elements => {
   const queryRootEL = D.querySelector(rootEL)
   return {
     rootEL,
@@ -47,9 +48,8 @@ const elements = R.memoize((rootEL: HTMLElement) => {
     containerEL: queryRootEL('.side-nav-container'),
     overlayEL: queryRootEL('.overlay')
   }
-})
-const mainReducer = R.curry((rootEL: HTMLElement, e: IState) => {
-  const el = elements(rootEL)
+}
+const mainReducer = R.curry((el: Elements, e: IState) => {
   return D.combine(
     D.toggleClass(el.containerEL, 'no-anime', e.isMoving),
     D.style(el.slotEL, 'transform', translateCSS(e.completion)),
@@ -69,7 +69,7 @@ const fromInnerHTML = R.curry((isVisible$: O.IObservable<boolean>, rootEL: HTMLE
   const model$ = O.scan((curr: Reducer, memory: IState) => curr(memory), null, reducer$)
 
   return O.merge(
-    O.map(mainReducer(rootEL), model$),
+    O.map(mainReducer(el), model$),
     overlayClicks(ev('touchstart'))
   )
 })
