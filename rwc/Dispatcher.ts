@@ -1,15 +1,13 @@
 /**
  * Created by tushar.mathur on 04/11/16.
  */
-
 import * as O from 'observable-air'
 import {Action} from './Action'
 
 
 const params = <T> (x: Action<T>) => x.params
 export class Dispatcher<T> {
-  private subject: O.ISubject<Action<T>> = O.subject()
-
+  private subject = O.subject<Action<T>>()
 
   dispatch (type: string, params: T = null) {
     this.subject.next(new Action(type, params))
@@ -18,7 +16,7 @@ export class Dispatcher<T> {
   select<T> (type: string) {
     return O.map(
       params,
-      O.filter((x: Action<T>) => x.type === type, this.subject)
+      O.filter(x => x.type === type, this.subject)
     )
   }
 

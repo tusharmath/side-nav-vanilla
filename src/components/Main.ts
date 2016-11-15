@@ -4,27 +4,29 @@
 
 import {h} from 'preact'
 import * as O from 'observable-air'
+import * as R from 'ramda'
 import t from '../Tasks'
 import SideNav from './SideNav'
 import MenuItems from './MenuItems'
 import {Model} from '../types/Model'
 import {Dispatcher, dispatcher} from '../../rwc/Dispatcher'
+import {Task} from '../../rwc/Task'
 
 const HorizontalNav = (d: Dispatcher<Event>) => h('div', {className: 'horizontal-nav'},
   h('i', {className: 'material-icons', onClick: d.listener('show')}, 'menu')
 )
-export const view = (d: Dispatcher<Event>, state: Model, menuItems: JSX.Element, horizontalNav: JSX.Element) =>
-  h('div', null,
+export const view = (d: Dispatcher<Event>, model: Model, menuItems: JSX.Element, horizontalNav: JSX.Element) => {
+  return h('div', null,
     horizontalNav,
-    SideNav.view(d, state, menuItems)
+    SideNav.view(d, model.sideNav, menuItems)
   )
-
-export function main () {
+}
+export function main (): O.IObservable<Task> {
   const snDispatcher = dispatcher()
   const snReducer$ = SideNav.update(snDispatcher)
-  const state$ = O.scan((f, v) => f(v), SideNav.init(), snReducer$)
+  const model$ = O.scan((f, v) => R.assoc('sideNav', f(v.sideNav), v), {sideNav: SideNav.init()}, snReducer$)
   const menuItemsView = MenuItems.view(snDispatcher)
   const horizontalNavView = HorizontalNav(snDispatcher)
 
-  return O.map(model => t.dom(view(snDispatcher, model, menuItemsView, horizontalNavView)), state$)
+  return O.map<Model, Task>(model => t.dom(view(snDispatcher, model, menuItemsView, horizontalNavView)), model$)
 }
