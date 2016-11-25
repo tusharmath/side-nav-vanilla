@@ -5,26 +5,36 @@ import * as O from 'observable-air'
 import {Action} from './Action'
 
 
-const params = <T> (x: Action<T>) => x.params
-export class Dispatcher<T> {
-  private subject = O.subject<Action<T>>()
-
-  dispatch (type: string, params: T = null) {
-    this.subject.next(new Action(type, params))
+export class Dispatcher<A> {
+  constructor (private fac: <T>(v: T) => Action<T>,
+               private subject = O.subject<Action<A>>()) {
   }
 
-  select<T> (type: string) {
-    return O.map(
-      params,
-      O.filter(x => x.type === type, this.subject)
+  listen = (value: A) => {
+    this.subject.next(this.fac(value))
+  }
+
+  get event$ () {
+    return this.subject as O.IObservable<Action<A>>
+  }
+
+  of<T> (type: string) {
+    return new Dispatcher(
+      (value: T) => this.fac(new Action(type, value)),
+      this.subject
     )
   }
 
-  listener (type: string) {
-    return this.dispatch.bind(this, type)
+  select (type: string) {
+    return Dispatcher.select(type, this.event$)
+  }
+
+  static of <T> (type: string) {
+    return new Dispatcher((v: T) => new Action(type, v))
+  }
+
+  static select <T> (type: string, source: O.IObservable<Action<T>>) {
+    return O.map(x => x.params, O.filter(x => x.type === type, source))
   }
 }
 
-export function dispatcher<T> () {
-  return new Dispatcher<T>()
-}

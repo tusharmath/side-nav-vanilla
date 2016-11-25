@@ -4,11 +4,11 @@
 
 import {h} from 'preact'
 import {Dispatcher} from '../../rwc/Dispatcher'
-export const view = (ev: Dispatcher<Event>) =>
+export const view = (d: Dispatcher<Event>) =>
   h('div', null,
     h('div', {className: 'navbar-header'},
       h('div', null,
-        h('i', {className: 'material-icons', onClick: ev.listener('hide')}, 'close')
+        h('i', {className: 'material-icons', onClick: d.of('hide').listen}, 'close')
       ),
       h('div', {className: 'nav-title'}, 'Side Nav Demo')
     ),
