@@ -3,19 +3,41 @@
  */
 
 
-import {render} from 'preact'
 import {Task} from '../rwc/Task'
-export {h} from 'preact'
+import {VNode} from 'snabbdom'
+import {IVNode} from './types/IVNode'
+declare function require (path: string): any
+const snabbdom = require('snabbdom')
 
-let result: Element
-const element = document.querySelector('#app')
+const patch = snabbdom.init([
+  require('snabbdom/modules/class'),
+  require('snabbdom/modules/props'),
+  require('snabbdom/modules/style'),
+  require('snabbdom/modules/eventlisteners')
+])
+
+export interface Props {
+  style?: {[name: string]: string},
+  on?: any
+  'class'?: {[name: string]: boolean}
+}
+
+export interface Hyperscript {
+  (type: string, props: Props, children: Array<VNode|string>): VNode
+  (type: string, children: Array<VNode|string>): VNode
+  (type: string, props: Props): VNode
+  (type: string): VNode
+}
+
+export const h = require('snabbdom/h') as Hyperscript
+let element = document.querySelector('#app')
 
 export class DOMTask implements Task {
-  constructor (private view: JSX.Element) {
+  constructor (private view: VNode) {
   }
 
   run () {
-    result = render(this.view, element, result)
+    element = patch(element, this.view)
   }
 }
 export class PreventDefaultTask implements Task {
@@ -28,6 +50,6 @@ export class PreventDefaultTask implements Task {
 }
 
 export default {
-  dom: (view: JSX.Element) => new DOMTask(view),
+  dom: (view: IVNode) => new DOMTask(view),
   preventDefault: (ev: Event) => new PreventDefaultTask(ev)
 }

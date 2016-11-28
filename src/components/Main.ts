@@ -1,7 +1,7 @@
 /**
  * Created by tushar.mathur on 04/11/16.
  */
-import {h} from 'preact'
+import {h} from '../Tasks'
 import * as O from 'observable-air'
 import * as R from 'ramda'
 import t from '../Tasks'
@@ -11,16 +11,17 @@ import {Model} from '../types/Model'
 import {Dispatcher} from '../../rwc/Dispatcher'
 import {Task} from '../../rwc/Task'
 import * as HorizontalNav from './HorizontalNav'
+import {IVNode} from '../types/IVNode'
 
-export const view = (d: Dispatcher<Event>, model: Model, children: {menuItems: JSX.Element, horizontalNav: JSX.Element}) => {
-  return h('div', null,
+export const view = (d: Dispatcher<Event>, model: Model, children: {menuItems: IVNode, horizontalNav: IVNode}) => {
+  return h('div', [
     children.horizontalNav,
     SideNav.view(
       d.of('side-nav'),
       model.sideNav,
       children.menuItems
     )
-  )
+  ])
 }
 export function main (): O.IObservable<Task> {
   const d = Dispatcher.of('@root')

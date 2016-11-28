@@ -3,8 +3,8 @@
  */
 
 import {Dispatcher} from '../../rwc/Dispatcher'
-import {h} from 'preact'
+import {h} from '../Tasks'
 
-export const view = (d: Dispatcher<Event>) => h('div', {className: 'horizontal-nav'},
-  h('i', {className: 'material-icons', onClick: d.of('show').listen}, 'menu')
-)
+export const view = (d: Dispatcher<Event>) => h('div.horizontal-nav', [
+  h('i.material-icons', {on: {click: d.of('show').listen}}, ['menu'])
+])

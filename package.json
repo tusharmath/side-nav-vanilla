@@ -23,12 +23,12 @@
     "rollup": "^0.36.3",
     "rollup-plugin-commonjs": "^5.0.5",
     "systemjs": "^0.19.40",
-    "tslint": "4.0.1",
-    "typescript": "2.1.1"
+    "tslint": "4.0.1"
   },
   "dependencies": {
     "observable-air": "^1.20.0",
-    "preact": "^6.4.0",
-    "ramda": "^0.22.1"
+    "ramda": "^0.22.1",
+    "snabbdom": "0.5.4",
+    "typescript": "^2.0.10"
   }
 }

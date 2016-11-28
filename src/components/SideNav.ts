@@ -3,11 +3,12 @@
  */
 
 import * as O from 'observable-air'
-import {h} from 'preact'
+import {h} from '../Tasks'
 import * as R from 'ramda'
 import {Dispatcher} from '../../rwc/Dispatcher'
 import {SideNavModel} from '../types/Model'
 import {Action} from '../../rwc/Action'
+import {IVNode} from '../types/IVNode'
 
 
 const TRANSLATE_END = -1.05
@@ -54,25 +55,25 @@ export const update = (args: {ev: O.IObservable<Action<Event>>, show$: O.IObserv
   )
 }
 
-export const view = (f: Dispatcher<Event>, state: SideNavModel, children: JSX.Element) =>
-  h('div', {
-      className: `side-nav-container ${state.isMoving ? 'no-anime' : ''} ${state.completion < -1 ? 'no-show' : ''}`,
-      onTouchMove: f.of('touchMove').listen,
-      onTouchStart: f.of('touchStart').listen,
-      onTouchEnd: f.of('touchEnd').listen
-    },
-    h('div', {
-      className: 'overlay',
-      style: {opacity: opacityCSS(state.completion)},
-      onClick: f.of('click').listen
+export const view = (f: Dispatcher<Event>, state: SideNavModel, children: IVNode) =>
+  h('div.side-nav-container', {
+    'class': {'no-anime': state.isMoving, 'no-show': state.completion < -1},
+    on: {
+      touchmove: f.of('touchMove').listen,
+      touchstart: f.of('touchStart').listen,
+      touchend: f.of('touchEnd').listen
+    }
+  }, [
+    h('div.overlay', {
+      style: {opacity: opacityCSS(state.completion) },
+      on: {click: f.of('click').listen}
     }),
-    h('div', {
-        style: {transform: translateCSS(state.completion)},
-        className: `side-nav-slot`
+    h('div.side-nav-slot', {
+        style: {transform: translateCSS(state.completion)}
       },
-      children
+      [children]
     )
-  )
+  ])
 
 export const init = () => ({
   width: 0,
